@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { OssFile } from "@/composables/api/res";
+import type { InputHTMLAttributes } from "vue";
 import { deleteOssFile, getOssErrorCode, getResToken, OssFileType, uploadOssFileSe } from "@/composables/api/res";
 import { StatusCode } from "@/types/result";
 import * as qiniu from "qiniu-js";
@@ -12,6 +13,7 @@ const {
   preClass = "",
   errorClass = "",
   inputClass = "",
+  inputProps = {},
   multiple = false,
   showEdit = true,
   showDelete = true,
@@ -43,6 +45,7 @@ interface Props {
   disable?: boolean
   isAnimate?: boolean
   uploadQuality?: number
+  inputProps?: InputHTMLAttributes
   /**
    * 文件类型
    * @default 'image/*'
@@ -424,6 +427,7 @@ onMounted(() => {
         :required="required"
         :disabled="disable"
         :draggable="draggable"
+        v-bind="inputProps"
         @change="hangdleChange"
       >
       <ElIconPlus class="h-1/3 w-1/3 absolute-center" />

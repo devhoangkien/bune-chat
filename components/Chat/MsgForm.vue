@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import type { ElForm, ElMention } from "element-plus";
 import ContextMenu from "@imengyu/vue3-context-menu";
-import { FILE_TYPE_ICON_DEFAULT, FILE_TYPE_ICON_MAP, formatFileSize } from "~/composables/api/res/file";
-import { getImgSize } from "./Msg";
 
 const emit = defineEmits<{
   (e: "submit", newMsg: ChatMessageVO): void
@@ -397,6 +395,12 @@ function removeOssFile(type: OssFileType = OssFileType.IMAGE, key?: string, inde
   }
 }
 
+// 移动端工具栏
+const isFoldTools = ref(false);
+function toggleMobileTools() {
+  isFoldTools.value = !isFoldTools.value;
+}
+
 // 到底部并消费消息
 function setReadAndScrollBottom() {
   if (chat.theRoomId) {
@@ -544,303 +548,171 @@ onUnmounted(() => {
         </div>
       </Transition>
     </Teleport>
-    <!-- <span
-      v-loading.fullscreen.lock="isDragDropOver"
-      element-loading-text="拖拽此上传"
-      element-loading-background="transparent"
-      :element-loading-svg="false"
-    /> -->
-    <div class="absolute w-full flex flex-col p-2 -transform-translate-y-full" @click.prevent="() => {}">
-      <!-- 滚动底部 -->
-      <div
-        v-if="(chat.theContact?.msgList?.length || 0) > 20"
-        data-fade
-        class="mb-2 ml-a mr-2 w-fit rounded-full px-3 text-right shadow-lg btn-info card-bg-color border-default-hover"
-        @click="setReadAndScrollBottom"
-      >
-        <i class="i-solar:double-alt-arrow-down-line-duotone block h-5 w-5 transition-200" />
-      </div>
-      <!-- 新消息 -->
-      <div
-        v-show="chat.theContact.unreadCount"
-        class="mb-2 w-full flex cursor-pointer justify-right px-2"
-        @click="setReadAndScrollBottom"
-      >
-        <el-tag type="warning" effect="light" round class="ml-a">
-          有 {{ chat.theContact.unreadCount }} 条新消息
-        </el-tag>
-      </div>
-      <!-- 图片 -->
-      <div
-        v-if="imgList.length > 0"
-        class="w-full flex flex-wrap cursor-pointer justify-end gap-2"
-        style="padding: 0 0.5rem;margin:0;margin-bottom:0.4rem;"
-      >
-        <div
-          v-for="(img, i) in imgList" :key="i" v-loading="img.status !== 'success'"
-          class="group relative flex-row-c-c shadow-sm transition-shadow border-default-2 card-default hover:shadow"
-          :element-loading-spinner="defaultLoadingIcon"
-          element-loading-background="transparent"
-          @contextmenu="onContextFileMenu($event, img.key, i, OssFileType.IMAGE)"
-        >
-          <div title="撤销图片" class="absolute right-2 top-2 z-5 h-6 w-6 transition-opacity !rounded-full card-default-br group-hover-op-80 hover-op-100 sm:op-0" @click.stop="removeOssFile(OssFileType.IMAGE, img.key, i)">
-            <i i-solar:minus-circle-linear block h-full w-full />
-          </div>
-          <CardElImage
-            preview-teleported
-            loading="lazy"
-            :preview-src-list="[img.id || BaseUrlImg + img.key]"
-            :src="img.id || BaseUrlImg + img.key"
-            ctx-name="img"
-            load-class="sky-loading block  absolute top-0"
-            class="shadow-sm transition-shadow card-default hover:shadow"
-            :style="getImgSize(img.width, img.height)"
-            :class="imgList.length > 1 ? '!w-4rem h-4rem !sm:(w-8rem h-8rem)' : '!max-h-80vw !max-w-50vh  !sm:(max-h-18rem max-w-18rem)'"
-            title="左键放大 | 右键删除"
-          />
-        </div>
-      </div>
-      <!-- 视频 -->
-      <div
-        v-if="videoList.length > 0"
-        class="w-full cursor-pointer"
-        style="padding: 0 0.5rem;margin:0;margin-bottom:0.4rem;display: flex;width:fit-content;justify-content: center;gap: 0.5rem;grid-gap:4;margin-left: auto;"
-      >
-        <div
-          v-for="(video, i) in videoList"
-          :key="i"
-          title="点击播放[视频]"
-          class="relative"
-          @click="showVideoDialog($event, video)"
-          @contextmenu="onContextFileMenu($event, video.key, i, OssFileType.VIDEO)"
-        >
-          <div
-            v-if="video?.children?.[0]?.id"
-            v-loading="video.status !== 'success'"
-            :element-loading-spinner="defaultLoadingIcon"
-            element-loading-background="transparent"
-            class="relative flex-row-c-c cursor-pointer"
-          >
-            <img
-              error-class="i-solar:file-smile-line-duotone p-2.8"
-              :src="video?.children?.[0]?.id"
-              class="h-full max-h-16rem max-w-16rem min-h-8rem min-w-8rem w-full flex-row-c-c shadow card-default"
-            >
-            <div class="play-btn h-12 w-12 flex-row-c-c rounded-full absolute-center-center" style="border-width: 2px;">
-              <i i-solar:alt-arrow-right-bold ml-1 p-4 />
-            </div>
-          </div>
-          <div class="mt-1 w-full truncate card-rounded-df pb-2 pl-3 pr-2 backdrop-blur transition-all bg-color-br" :class="video.status !== 'success' ? 'h-8' : 'h-0 !p-0 '">
-            <el-progress
-              striped
-              :striped-flow="video.status !== 'success'"
-              :duration="10"
-              class="absolute mt-2 min-w-8em w-full"
-              :percentage="video.percent" :stroke-width="4" :status="video?.status as any || ''"
-            >
-              {{ formatFileSize(video?.file?.size || 0) }}
-            </el-progress>
-          </div>
-          <!-- <div v-if="formattedDuration" class="bg-blur absolute bottom-1 right-2 text-shadow">
-            {{ formattedDuration }}
-          </div> -->
-        </div>
-      </div>
-      <!-- 文件 -->
-      <div
-        v-if="fileList.length > 0"
-        class="w-full cursor-pointer"
-        style="padding: 0 0.5rem;margin:0;margin-bottom:0.4rem;display: flex;width:fit-content;justify-content: center;gap: 0.5rem;grid-gap:4;margin-left: auto;"
-      >
-        <div
-          v-for="(file, i) in fileList"
-          :key="i" class="flex-row-c-c p-3.2 shadow-sm transition-all border-default card-default bg-color sm:p-2.8 hover:shadow"
-          @contextmenu="onContextFileMenu($event, file.key, i, OssFileType.FILE)"
-        >
-          <img :src="file?.file?.type ? (FILE_TYPE_ICON_MAP[file?.file?.type] || FILE_TYPE_ICON_DEFAULT) : FILE_TYPE_ICON_DEFAULT" class="mr-2 h-8 w-8">
-          <div class="max-w-16rem min-w-8rem">
-            <p class="truncate text-sm">
-              {{ (file?.file?.name || file.key)?.replace(/(.{10}).*(\..+)/, '$1****$2') }}
-            </p>
-            <el-progress
-              striped
-              :striped-flow="file.status !== 'success'"
-              :duration="10"
-              class="mt-2"
-              :percentage="file.percent" :stroke-width="4" :status="file?.status as any || ''"
-            >
-              {{ formatFileSize(file?.file?.size || 0) }}
-            </el-progress>
-          </div>
-        </div>
-      </div>
-      <!-- 回复 -->
-      <div
-        v-if="chat.replyMsg?.fromUser"
-        prop="body.replyMsgId"
-        class="w-full text-sm"
-      >
-        <div class="w-full flex animate-[300ms_fade-in] items-center p-2 shadow card-default-br border-default-hover">
-          <el-tag effect="dark" size="small" class="mr-2 shrink-0">
-            回复
-          </el-tag>
-
-          <div class="max-w-4/5 truncate">
-            {{ `${chat.replyMsg?.fromUser?.nickName}: ${resolveMsgReplyText(chat.replyMsg as ChatMessageVO)}` }}
-          </div>
-          <!-- <ChatMsgContentCard  :data="chat.replyMsg" /> -->
-          <div class="i-solar:close-circle-bold ml-a h-6 w-6 text-dark op-80 transition-200 transition-color sm:(h-5 w-5) btn-default dark:text-light hover:text-[var(--el-color-danger)]" @click="chat.setReplyMsg({})" />
-        </div>
-      </div>
-    </div>
+    <!-- 预览 -->
+    <ChatMsgAttachview
+      :img-list="imgList"
+      :video-list="videoList"
+      :file-list="fileList"
+      :reply-msg="chat.replyMsg"
+      :the-contact="chat.theContact"
+      :default-loading-icon="defaultLoadingIcon"
+      :context-menu-theme="setting.contextMenuTheme"
+      @remove-file="removeOssFile"
+      @show-video="showVideoDialog"
+      @clear-reply="chat.setReplyMsg({})"
+      @scroll-bottom="setReadAndScrollBottom"
+    />
     <div class="form-tools">
       <!-- 工具栏 TODO: AI机器人暂不支持 -->
-      <div
-        v-if="!isAiRoom"
-        class="relative m-b-2 flex items-center gap-3 px-2 sm:mb-0 sm:gap-4"
-      >
-        <el-tooltip popper-style="padding: 0.2em 0.5em;" :content="!isSoundRecordMsg ? (setting.isMobileSize ? '语音' : '语音 Ctrl+T') : '键盘'" placement="top">
-          <i
-            :class="!isSoundRecordMsg ? 'i-solar:microphone-3-broken hover:animate-pulse' : 'i-solar:keyboard-broken'"
-            class="h-6 w-6 cursor-pointer btn-primary"
-            @click="chat.msgForm.msgType = chat.msgForm.msgType === MessageType.TEXT ? MessageType.SOUND : MessageType.TEXT"
-          />
-        </el-tooltip>
-        <!-- 语音 -->
-        <template v-if="isSoundRecordMsg">
-          <div v-show=" !theAudioFile?.id" class="absolute-center-x">
-            <BtnElButton
-              ref="pressHandleRef"
-              type="primary" class="group tracking-0.1em hover:shadow"
-              :class="{ 'is-chating': isChating }"
-              style="padding: 0.8rem 3rem;"
-              round
-              size="small"
-            >
-              <i i-solar:soundwave-line-duotone class="icon" p-2.5 />
-              <div class="text w-5rem truncate text-center transition-width group-hover:(w-6rem sm:w-8rem) sm:w-8rem">
-                <span class="chating-hidden">{{ isChating ? `正在输入 ${second}s` : (setting.isMobileSize ? '语音' : '语音 Ctrl+T') }}</span>
-                <span hidden class="chating-show">停止录音 {{ second ? `${second}s` : '' }}</span>
-              </div>
-            </BtnElButton>
-          </div>
-          <div v-show=" theAudioFile?.id" class="absolute-center-x">
-            <i p-2.4 />
-            <BtnElButton
-              type="primary"
-              class="group tracking-0.1em op-60 hover:op-100" :class="{ 'is-chating !op-100': isPalyAudio }"
-              style="padding: 0.8rem 3rem;" round size="small"
-              @click="handlePlayAudio(isPalyAudio ? 'stop' : 'play', theAudioFile?.id)"
-            >
-              {{ second ? `${second}s` : '' }}
-              <i :class="isPalyAudio ? 'i-solar:stop-bold' : 'i-solar:play-bold'" class="icon" ml-2 p-1 />
-            </BtnElButton>
+      <template v-if="!isAiRoom">
+        <div
+          class="relative m-b-2 flex items-center gap-3 px-2 sm:mb-0 sm:gap-4"
+        >
+          <el-tooltip popper-style="padding: 0.2em 0.5em;" :content="!isSoundRecordMsg ? (setting.isMobileSize ? '语音' : '语音 Ctrl+T') : '键盘'" placement="top">
             <i
-              i-solar:trash-bin-minimalistic-broken ml-3 p-2.4 btn-danger
-              @click="handlePlayAudio('del')"
+              :class="!isSoundRecordMsg ? 'i-solar:microphone-3-broken hover:animate-pulse' : 'i-solar:keyboard-broken'"
+              class="h-6 w-6 cursor-pointer btn-primary"
+              @click="chat.msgForm.msgType = chat.msgForm.msgType === MessageType.TEXT ? MessageType.SOUND : MessageType.TEXT"
             />
-          </div>
-          <BtnElButton
-            v-if="setting.isMobileSize"
-            :disabled="!user.isLogin || isSending || isNotExistOrNorFriend"
-            type="primary"
-            round
-            style="height: 1.8rem !important;"
-            class="ml-a w-3.6rem text-xs tracking-0.1em"
-            :loading="isBtnLoading"
-            @click="handleSubmit()"
-          >
-            发送
-          </BtnElButton>
-        </template>
-        <!-- 非语音 -->
-        <template v-else>
-          <div class="grid cols-4 items-center gap-3 sm:flex sm:gap-4">
-            <!-- 图片 -->
-            <InputOssFileUpload
-              ref="inputOssImgUploadRef"
-              v-model="imgList"
-              :multiple="true"
-              :preview="false"
-              :size="setting.systemConstant.ossInfo?.image?.fileSize"
-              :min-size="1024"
-              :limit="9"
-              :disable="isDisabledFile"
-              class="i-solar:album-line-duotone h-6 w-6 cursor-pointer sm:(h-5 w-5) btn-primary"
-              pre-class="hidden"
-              :upload-type="OssFileType.IMAGE"
-              input-class="op-0 h-6 w-6 sm:(w-5 h-5) cursor-pointer "
-              :upload-quality="0.5"
-              @error-msg="(msg:string) => {
-                ElMessage.error(msg)
-              }"
-              @submit="onSubmitImg"
-            />
-            <!-- 视频 -->
-            <InputOssFileUpload
-              ref="inputOssVideoUploadRef"
-              v-model="videoList"
-              :multiple="false"
-              :size="setting.systemConstant.ossInfo?.video?.fileSize"
-              :min-size="1024"
-              :preview="false"
-              :limit="1"
-              :disable="isDisabledFile"
-              class="i-solar:video-library-line-duotone h-6 w-6 cursor-pointer sm:(h-5 w-5) btn-primary"
-              pre-class="hidden"
-              :upload-type="OssFileType.VIDEO"
-              input-class="op-0 h-6 w-6 sm:(w-5 h-5) cursor-pointer "
-              accept=".mp4,.webm,.mpeg,.flv"
-              @error-msg="(msg:string) => {
-                ElMessage.error(msg)
-              }"
-              @submit="onSubmitVideo"
-            />
-            <!-- 文件 -->
-            <InputOssFileUpload
-              ref="inputOssFileUploadRef"
-              v-model="fileList"
-              :multiple="false"
-              :size="setting.systemConstant.ossInfo?.file?.fileSize"
-              :min-size="1024"
-              :preview="false"
-              :limit="1"
-              :disable="isDisabledFile"
-              class="i-solar-folder-with-files-line-duotone h-6 w-6 cursor-pointer sm:(h-5 w-5) btn-primary"
-              pre-class="hidden"
-              :upload-type="OssFileType.FILE"
-              input-class="op-0 h-6 w-6 sm:(w-5 h-5) cursor-pointer "
-              :accept="FILE_UPLOAD_ACCEPT"
-              @error-msg="(msg:string) => {
-                ElMessage.error(msg)
-              }"
-              @submit="onSubmitFile"
-            />
-          </div>
-          <i ml-a block w-0 />
-          <!-- 群通知消息 -->
-          <div
-            v-if="isLord"
-            title="群通知消息"
-            class="i-carbon:bullhorn inline-block p-3.2 transition-200 btn-primary sm:p-2.8"
-            @click="showGroupNoticeDialog = true"
-          />
-          <template v-if="isSelfRoom ">
-            <!-- 语音通话 -->
-            <div
-              title="语音通话"
-              class="i-solar:phone-calling-outline p-3 transition-200 btn-primary sm:p-2.8"
-              @click="chat.openRtcCall(chat.theRoomId!, CallTypeEnum.AUDIO)"
-            />
-            <!-- 视频通话 -->
-            <div
-              title="视频通话"
-              class="i-solar:videocamera-record-line-duotone p-3.2 transition-200 btn-primary sm:p-2.8"
-              @click="chat.openRtcCall(chat.theRoomId!, CallTypeEnum.VIDEO)"
-            />
+          </el-tooltip>
+          <!-- 语音 -->
+          <template v-if="isSoundRecordMsg">
+            <div v-show=" !theAudioFile?.id" class="absolute-center-x">
+              <BtnElButton
+                ref="pressHandleRef"
+                type="primary" class="group tracking-0.1em hover:shadow"
+                :class="{ 'is-chating': isChating }"
+                style="padding: 0.8rem 3rem;"
+                round
+                size="small"
+              >
+                <i i-solar:soundwave-line-duotone class="icon" p-2.5 />
+                <div class="text w-5rem truncate text-center transition-width group-hover:(w-6rem sm:w-8rem) sm:w-8rem">
+                  <span class="chating-hidden">{{ isChating ? `正在输入 ${second}s` : (setting.isMobileSize ? '语音' : '语音 Ctrl+T') }}</span>
+                  <span hidden class="chating-show">停止录音 {{ second ? `${second}s` : '' }}</span>
+                </div>
+              </BtnElButton>
+            </div>
+            <div v-show=" theAudioFile?.id" class="absolute-center-x">
+              <i p-2.4 />
+              <BtnElButton
+                type="primary"
+                class="group tracking-0.1em op-60 hover:op-100" :class="{ 'is-chating !op-100': isPalyAudio }"
+                style="padding: 0.8rem 3rem;" round size="small"
+                @click="handlePlayAudio(isPalyAudio ? 'stop' : 'play', theAudioFile?.id)"
+              >
+                {{ second ? `${second}s` : '' }}
+                <i :class="isPalyAudio ? 'i-solar:stop-bold' : 'i-solar:play-bold'" class="icon" ml-2 p-1 />
+              </BtnElButton>
+              <i
+                i-solar:trash-bin-minimalistic-broken ml-3 p-2.4 btn-danger
+                @click="handlePlayAudio('del')"
+              />
+            </div>
+            <BtnElButton
+              v-if="setting.isMobileSize"
+              :disabled="!user.isLogin || isSending || isNotExistOrNorFriend"
+              type="primary"
+              round
+              style="height: 1.8rem !important;"
+              class="ml-a w-3.6rem text-xs tracking-0.1em"
+              :loading="isBtnLoading"
+              @click="handleSubmit()"
+            >
+              发送
+            </BtnElButton>
           </template>
-        </template>
-      </div>
+          <!-- 非语音 -->
+          <template v-else>
+            <div class="grid cols-4 items-center gap-3 sm:flex sm:gap-4">
+              <!-- 图片 -->
+              <InputOssFileUpload
+                ref="inputOssImgUploadRef"
+                v-model="imgList"
+                :multiple="true"
+                :preview="false"
+                :size="setting.systemConstant.ossInfo?.image?.fileSize"
+                :min-size="1024"
+                :limit="9"
+                :disable="isDisabledFile"
+                class="i-solar:album-line-duotone h-6 w-6 cursor-pointer sm:(h-5 w-5) btn-primary"
+                pre-class="hidden"
+                :upload-type="OssFileType.IMAGE"
+                input-class="op-0 h-6 w-6 sm:(w-5 h-5) cursor-pointer "
+                :upload-quality="0.5"
+                @error-msg="(msg:string) => {
+                  ElMessage.error(msg)
+                }"
+                @submit="onSubmitImg"
+              />
+              <!-- 视频 -->
+              <InputOssFileUpload
+                ref="inputOssVideoUploadRef"
+                v-model="videoList"
+                :multiple="false"
+                :size="setting.systemConstant.ossInfo?.video?.fileSize"
+                :min-size="1024"
+                :preview="false"
+                :limit="1"
+                :disable="isDisabledFile"
+                class="i-solar:video-library-line-duotone h-6 w-6 cursor-pointer sm:(h-5 w-5) btn-primary"
+                pre-class="hidden"
+                :upload-type="OssFileType.VIDEO"
+                input-class="op-0 h-6 w-6 sm:(w-5 h-5) cursor-pointer "
+                accept=".mp4,.webm,.mpeg,.flv"
+                @error-msg="(msg:string) => {
+                  ElMessage.error(msg)
+                }"
+                @submit="onSubmitVideo"
+              />
+              <!-- 文件 -->
+              <InputOssFileUpload
+                ref="inputOssFileUploadRef"
+                v-model="fileList"
+                :multiple="false"
+                :size="setting.systemConstant.ossInfo?.file?.fileSize"
+                :min-size="1024"
+                :preview="false"
+                :limit="1"
+                :disable="isDisabledFile"
+                class="i-solar-folder-with-files-line-duotone h-6 w-6 cursor-pointer sm:(h-5 w-5) btn-primary"
+                pre-class="hidden"
+                :upload-type="OssFileType.FILE"
+                input-class="op-0 h-6 w-6 sm:(w-5 h-5) cursor-pointer "
+                :accept="FILE_UPLOAD_ACCEPT"
+                @error-msg="(msg:string) => {
+                  ElMessage.error(msg)
+                }"
+                @submit="onSubmitFile"
+              />
+            </div>
+            <i ml-a block w-0 />
+            <!-- 群通知消息 -->
+            <div
+              v-if="isLord"
+              title="群通知消息"
+              class="i-carbon:bullhorn inline-block p-3.2 transition-200 btn-primary sm:p-2.8"
+              @click="showGroupNoticeDialog = true"
+            />
+            <template v-if="isSelfRoom ">
+              <!-- 语音通话 -->
+              <div
+                title="语音通话"
+                class="i-solar:phone-calling-outline p-3 transition-200 btn-primary sm:p-2.8"
+                @click="chat.openRtcCall(chat.theRoomId!, CallTypeEnum.AUDIO)"
+              />
+              <!-- 视频通话 -->
+              <div
+                title="视频通话"
+                class="i-solar:videocamera-record-line-duotone p-3.2 transition-200 btn-primary sm:p-2.8"
+                @click="chat.openRtcCall(chat.theRoomId!, CallTypeEnum.VIDEO)"
+              />
+            </template>
+            <!-- 工具栏打开扩展 -->
+            <span class="i-solar:add-circle-linear inline-block p-3 transition-200 sm:hidden btn-primary" @click="toggleMobileTools" />
+          </template>
+        </div>
+      </template>
       <!-- 录音 -->
       <p
         v-if="isSoundRecordMsg"
@@ -907,7 +779,7 @@ onUnmounted(() => {
           发送
         </BtnElButton>
       </el-form-item>
-      <!-- 工具栏 -->
+      <!-- 发送 -->
       <div
         v-if="!setting.isMobileSize"
         class="hidden items-end p-1 pt-0 sm:flex"
@@ -940,6 +812,9 @@ onUnmounted(() => {
       </div>
     </div>
   </el-form>
+  <!-- 移动端菜单栏 -->
+
+  <!-- 新建通知 -->
   <ChatGroupNoticeMsgDialog v-model:show="showGroupNoticeDialog" @submit="onSubmitGroupNoticeMsg" />
 </template>
 
