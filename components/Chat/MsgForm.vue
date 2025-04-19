@@ -28,9 +28,10 @@ const maxContentLen = computed(() => chat.theContact.type === RoomType.AICHAT ? 
 const showGroupNoticeDialog = ref(false);
 const loadInputDone = ref(false); // 用于移动尺寸动画
 const loadInputTimer = shallowRef<NodeJS.Timeout>();
+const inputFocus = ref(false);
 
 // ref
-const inputAllRef = useTemplateRef<InstanceType<typeof ElMention>>("inputAllRef"); // 输入框
+const inputContentRef = useTemplateRef<InstanceType<typeof ElMention>>("inputContentRef"); // 输入框
 const formRef = useTemplateRef<InstanceType<typeof ElForm>>("formRef"); // 表单
 
 // hooks
@@ -398,9 +399,9 @@ function removeOssFile(type: OssFileType = OssFileType.IMAGE, key?: string, inde
 // 移动端工具栏
 const showMobileTools = ref(false);
 watch(
-  () => [chat.isOpenContact, isSoundRecordMsg],
-  ([open, rcord]) => {
-    if (open || rcord)
+  () => [chat.isOpenContact, isSoundRecordMsg, inputFocus],
+  ([open, rcord, focus]) => {
+    if (open || rcord || focus)
       showMobileTools.value = false;
   },
   {
@@ -422,40 +423,40 @@ const mobileTools = computed(() => {
   const tools: ToolItem[] = [
     {
       id: "image",
-      icon: "i-solar:album-bold-duotone",
+      icon: "i-solar:album-bold",
       label: "相册",
       disabled: isDisabledFile.value,
-      onClick: () => inputOssImgUploadRef.value?.openSelector?.({ }),
+      onClick: () => inputOssImgUploadRef.value?.openSelector?.({ accept: "image/*" }),
     },
     // 拍摄
     {
       id: "camera",
-      icon: "i-solar:camera-bold-duotone",
+      icon: "i-solar:camera-bold",
       label: "拍摄",
       disabled: isDisabledFile.value,
-      onClick: () => inputOssImgUploadRef.value?.openSelector?.({ capture: "environment" }),
+      onClick: () => inputOssImgUploadRef.value?.openSelector?.({ accept: "image/*", capture: "environment" }),
     },
     {
       id: "video",
       icon: "i-solar:video-library-line-duotone",
       label: "视频",
       disabled: isDisabledFile.value,
-      onClick: () => inputOssImgUploadRef.value?.openSelector?.({ }),
+      onClick: () => inputOssImgUploadRef.value?.openSelector?.({ accept: "video/*" }),
     },
     // 录视频
     {
       id: "video-record",
-      icon: "i-solar:videocamera-add-bold-duotone",
+      icon: "i-solar:videocamera-add-bold",
       label: "录视频",
       disabled: isDisabledFile.value,
-      onClick: () => inputOssImgUploadRef.value?.openSelector?.({ capture: "environment" }),
+      onClick: () => inputOssImgUploadRef.value?.openSelector?.({ accept: "video/*", capture: "environment" }),
     },
     {
       id: "file",
-      icon: "i-solar-folder-with-files-bold-duotone",
+      icon: "i-solar-folder-with-files-bold",
       label: "文件",
       disabled: isDisabledFile.value,
-      onClick: () => inputOssFileUploadRef.value?.openSelector?.(),
+      onClick: () => inputOssFileUploadRef.value?.openSelector?.({ }),
     },
   ];
 
@@ -465,9 +466,7 @@ const mobileTools = computed(() => {
       id: "notice",
       icon: "i-carbon:bullhorn",
       label: "群通知",
-      onClick: () => {
-        showGroupNoticeDialog.value = true;
-      },
+      onClick: () => showGroupNoticeDialog.value = true,
     });
   }
 
@@ -478,17 +477,13 @@ const mobileTools = computed(() => {
         id: "audio-call",
         icon: "i-solar:phone-calling-bold",
         label: "语音通话",
-        onClick: () => {
-          chat.openRtcCall(chat.theRoomId!, CallTypeEnum.AUDIO);
-        },
+        onClick: () => chat.openRtcCall(chat.theRoomId!, CallTypeEnum.AUDIO),
       },
       {
         id: "video-call",
         icon: "i-solar:videocamera-record-bold",
         label: "视频通话",
-        onClick: () => {
-          chat.openRtcCall(chat.theRoomId!, CallTypeEnum.VIDEO);
-        },
+        onClick: () => chat.openRtcCall(chat.theRoomId!, CallTypeEnum.VIDEO),
       },
     );
   }
@@ -526,8 +521,8 @@ watch(() => chat.theRoomId, (newVal, oldVal) => {
     }, 400);
     return;
   }
-  if (inputAllRef.value?.input)
-    inputAllRef.value?.input?.focus(); // 聚焦
+  if (inputContentRef.value?.input)
+    inputContentRef.value?.input?.focus(); // 聚焦
 }, {
   immediate: true,
 });
@@ -539,8 +534,8 @@ watch(() => chat.replyMsg?.message?.id, (val) => {
     replyMsgId: val,
   };
   nextTick(() => {
-    if (inputAllRef.value?.input)
-      inputAllRef.value?.input?.focus(); // 聚焦
+    if (inputContentRef.value?.input)
+      inputContentRef.value?.input?.focus(); // 聚焦
   });
 });
 
@@ -548,7 +543,7 @@ watch(() => chat.replyMsg?.message?.id, (val) => {
 onMounted(() => {
   // 监听快捷键
   window.addEventListener("keydown", startAudio);
-  !setting.isMobileSize && inputAllRef.value?.input?.focus(); // 聚焦
+  !setting.isMobileSize && inputContentRef.value?.input?.focus(); // 聚焦
   // At 用户
   mitter.on(MittEventType.CHAT_AT_USER, (e) => {
     if (isReplyAI.value) {
@@ -561,7 +556,7 @@ onMounted(() => {
     if (!user)
       return ElMessage.warning("该用户不可艾特！");
     if (type === "add") {
-      inputAllRef.value?.input?.focus(); // 聚焦
+      inputContentRef.value?.input?.focus(); // 聚焦
       if (chat?.msgForm?.content?.includes(`@${user.nickName}(#${user.username}) `))
         return;
       chat.msgForm.content += `@${user.nickName}(#${user.username}) `;
@@ -583,7 +578,7 @@ onMounted(() => {
     if (type === "add" && robot) {
       if (robot) {
         chat.msgForm.content += `/${robot.nickName}(#${robot.username}) `;
-        inputAllRef.value?.input?.focus(); // 聚焦
+        inputContentRef.value?.input?.focus(); // 聚焦
       }
     }
     else if (type === "remove" && robot) {
@@ -599,10 +594,10 @@ onMounted(() => {
     // payload ={}
   }: MsgFormEventPlaoyload) => {
     if (type === "focus") {
-      inputAllRef.value?.input?.focus(); // 聚焦
+      inputContentRef.value?.input?.focus(); // 聚焦
     }
     else if (type === "blur") {
-      inputAllRef.value?.input?.blur(); // 聚焦
+      inputContentRef.value?.input?.blur(); // 聚焦
     }
   });
 });
@@ -843,7 +838,7 @@ defineExpose({
       >
         <el-mention
           v-if="loadInputDone"
-          ref="inputAllRef"
+          ref="inputContentRef"
           v-model.lazy="chat.msgForm.content"
           :options="mentionList"
           :prefix="isReplyAI ? ['/'] : ['@']"
@@ -866,6 +861,8 @@ defineExpose({
           :popper-options="{
             placement: 'top-start',
           }"
+          @focus="inputFocus = true"
+          @blur="inputFocus = false"
           @paste.stop="onPaste($event)"
           @keydown.exact.enter.stop.prevent="handleSubmit()"
           @keydown.exact.arrow-up.stop.prevent="onInputExactKey('ArrowUp')"
@@ -954,7 +951,7 @@ defineExpose({
 <style lang="scss" scoped>
 .form-tools {
     --at-apply: "relative sm:h-62 flex flex-col justify-between p-2 border-default-t";
-    box-shadow: rgba(0, 0, 0, 0.05) 0px -4px 4px;
+    box-shadow: rgba(0, 0, 0, 0.08) 0px -1px 2px;
     .tip {
     --at-apply: "op-0";
   }

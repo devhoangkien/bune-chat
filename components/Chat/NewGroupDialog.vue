@@ -41,7 +41,7 @@ const show = computed({
 // 好友用户列表
 const isLoading = ref<boolean>(false);
 const pageInfo = ref({
-  size: 5,
+  size: 20,
   page: 0,
   total: -1,
 });
@@ -118,7 +118,7 @@ async function loadData() {
     friendMaps.set(item.userId, item);
   });
   pageInfo.value = {
-    size: 5,
+    size: 20,
     page: data.current,
     total: data.total,
   };
@@ -152,7 +152,7 @@ function reset() {
   imgStep.value = false;
   friendList.value = [];
   pageInfo.value = {
-    size: 5,
+    size: 20,
     page: 0,
     total: -1,
   };
@@ -162,7 +162,7 @@ const search = useDebounceFn(() => {
   imgStep.value = false;
   friendList.value = [];
   pageInfo.value = {
-    size: 5,
+    size: 20,
     page: 0,
     total: -1,
   };
@@ -227,7 +227,7 @@ defineExpose({
               </div>
             </template>
             <el-checkbox-group v-model="form.uidList" class="w-full card-rounded-df bg-color-2 sm:!bg-transparent">
-              <div class="scroll-bar max-h-40vh min-h-40vh flex flex-col overflow-y-auto sm:(max-h-22rem min-h-22rem)">
+              <div class="scroll-bar max-h-40vh min-h-40vh flex flex-col overflow-y-auto p-2 pr-0 sm:(max-h-22rem min-h-22rem p-0)">
                 <ListAutoIncre
                   :immediate="false"
                   :auto-stop="false"
@@ -391,7 +391,7 @@ defineExpose({
   --at-apply:"flex items-center px-4 gap-2 page-pointer rounded-6px p-2 hover:(bg-color-3 dark:bg-dark-8) transition-300"
 }
 :deep(.el-checkbox.is-checked){
-  --at-apply:" bg-color-3 dark:bg-dark-8 shadow-sm"
+  --at-apply:"bg-color dark:bg-dark-8 sm:(bg-color-3 dark:bg-dark-8) shadow-sm"
 }
 .avatar {
   :deep(.el-form-item__error) {

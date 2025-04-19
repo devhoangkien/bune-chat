@@ -38,7 +38,9 @@ onUnmounted(useUmounted);
 </script>
 
 <template>
-  <main class="h-100dvh flex-row-c-c">
+  <main
+    class="h-100vh flex-row-c-c"
+  >
     <div
       class="h-full w-full overflow-hidden bg-color"
       :class="{
