@@ -2,6 +2,8 @@
 defineProps<{
   roomId?: string
 }>();
+
+const msgFormRef = useTemplateRef("msgFormRef");
 </script>
 
 <template>
@@ -9,9 +11,9 @@ defineProps<{
     <!-- 房间信息 -->
     <ChatRoomInfo class="relative z-10 shadow-sm card-bg-color" />
     <!-- 消息列表 -->
-    <ChatMessageList />
+    <ChatMessageList @click="msgFormRef?.onClickOutside()" />
     <!-- 发送 -->
-    <ChatMsgForm class="card-bg-color-2" />
+    <ChatMsgForm ref="msgFormRef" class="card-bg-color-2" />
   </div>
 </template>
 

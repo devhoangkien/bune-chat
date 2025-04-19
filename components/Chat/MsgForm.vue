@@ -396,10 +396,105 @@ function removeOssFile(type: OssFileType = OssFileType.IMAGE, key?: string, inde
 }
 
 // 移动端工具栏
-const isFoldTools = ref(false);
-function toggleMobileTools() {
-  isFoldTools.value = !isFoldTools.value;
+const showMobileTools = ref(false);
+watch(
+  () => [chat.isOpenContact, isSoundRecordMsg],
+  ([open, rcord]) => {
+    if (open || rcord)
+      showMobileTools.value = false;
+  },
+  {
+    immediate: true,
+    deep: true,
+  },
+);
+
+// 移动端工具栏配置
+interface ToolItem {
+  id: string;
+  icon: string;
+  label: string;
+  className?: string;
+  disabled?: boolean;
+  onClick?: () => void;
 }
+const mobileTools = computed(() => {
+  const tools: ToolItem[] = [
+    {
+      id: "image",
+      icon: "i-solar:album-bold-duotone",
+      label: "相册",
+      disabled: isDisabledFile.value,
+      onClick: () => inputOssImgUploadRef.value?.openSelector?.({ }),
+    },
+    // 拍摄
+    {
+      id: "camera",
+      icon: "i-solar:camera-bold-duotone",
+      label: "拍摄",
+      disabled: isDisabledFile.value,
+      onClick: () => inputOssImgUploadRef.value?.openSelector?.({ capture: "environment" }),
+    },
+    {
+      id: "video",
+      icon: "i-solar:video-library-line-duotone",
+      label: "视频",
+      disabled: isDisabledFile.value,
+      onClick: () => inputOssImgUploadRef.value?.openSelector?.({ }),
+    },
+    // 录视频
+    {
+      id: "video-record",
+      icon: "i-solar:videocamera-add-bold-duotone",
+      label: "录视频",
+      disabled: isDisabledFile.value,
+      onClick: () => inputOssImgUploadRef.value?.openSelector?.({ capture: "environment" }),
+    },
+    {
+      id: "file",
+      icon: "i-solar-folder-with-files-bold-duotone",
+      label: "文件",
+      disabled: isDisabledFile.value,
+      onClick: () => inputOssFileUploadRef.value?.openSelector?.(),
+    },
+  ];
+
+  // 群主可以发送群通知
+  if (isLord.value) {
+    tools.push({
+      id: "notice",
+      icon: "i-carbon:bullhorn",
+      label: "群通知",
+      onClick: () => {
+        showGroupNoticeDialog.value = true;
+      },
+    });
+  }
+
+  // 私聊可以语音/视频通话
+  if (isSelfRoom.value) {
+    tools.push(
+      {
+        id: "audio-call",
+        icon: "i-solar:phone-calling-bold",
+        label: "语音通话",
+        onClick: () => {
+          chat.openRtcCall(chat.theRoomId!, CallTypeEnum.AUDIO);
+        },
+      },
+      {
+        id: "video-call",
+        icon: "i-solar:videocamera-record-bold",
+        label: "视频通话",
+        onClick: () => {
+          chat.openRtcCall(chat.theRoomId!, CallTypeEnum.VIDEO);
+        },
+      },
+    );
+  }
+
+  return tools;
+});
 
 // 到底部并消费消息
 function setReadAndScrollBottom() {
@@ -521,6 +616,18 @@ onUnmounted(() => {
   loadInputTimer.value && clearTimeout(loadInputTimer.value);
   window.removeEventListener("keydown", startAudio);
 });
+
+onDeactivated(() => {
+  showMobileTools.value = false;
+});
+
+defineExpose({
+  resetForm,
+  onContextFileMenu,
+  onClickOutside: () => {
+    showMobileTools.value = false;
+  },
+});
 </script>
 
 <template>
@@ -624,7 +731,7 @@ onUnmounted(() => {
           </template>
           <!-- 非语音 -->
           <template v-else>
-            <div class="grid cols-4 items-center gap-3 sm:flex sm:gap-4">
+            <div v-show="!setting.isMobileSize" class="grid cols-4 items-center gap-3 sm:flex sm:gap-4">
               <!-- 图片 -->
               <InputOssFileUpload
                 ref="inputOssImgUploadRef"
@@ -694,7 +801,7 @@ onUnmounted(() => {
               class="i-carbon:bullhorn inline-block p-3.2 transition-200 btn-primary sm:p-2.8"
               @click="showGroupNoticeDialog = true"
             />
-            <template v-if="isSelfRoom ">
+            <template v-if="isSelfRoom && !setting.isMobileSize">
               <!-- 语音通话 -->
               <div
                 title="语音通话"
@@ -709,20 +816,24 @@ onUnmounted(() => {
               />
             </template>
             <!-- 工具栏打开扩展 -->
-            <span class="i-solar:add-circle-linear inline-block p-3 transition-200 sm:hidden btn-primary" @click="toggleMobileTools" />
+            <span
+              class="i-solar:add-circle-linear inline-block p-3 transition-200 sm:hidden btn-primary"
+              :class="{ 'rotate-45': showMobileTools }"
+              @click="showMobileTools = !showMobileTools"
+            />
           </template>
         </div>
+        <!-- 录音 -->
+        <p
+          v-if="isSoundRecordMsg"
+          class="relative max-h-3.1rem min-h-3.1rem w-full flex-row-c-c flex-1 overflow-y-auto text-wrap sm:(h-fit max-h-full p-6) text-small"
+        >
+          {{ (isChating && speechRecognition.isSupported || theAudioFile?.id) ? (audioTransfromText || '...') : `识别你的声音 🎧${speechRecognition.isSupported ? '' : '（不支持）'}` }}
+        </p>
       </template>
-      <!-- 录音 -->
-      <p
-        v-if="isSoundRecordMsg"
-        class="relative max-h-3.1rem min-h-3.1rem w-full flex-row-c-c flex-1 overflow-y-auto text-wrap sm:(h-fit max-h-full p-6) text-small"
-      >
-        {{ (isChating && speechRecognition.isSupported || theAudioFile?.id) ? (audioTransfromText || '...') : `识别你的声音 🎧${speechRecognition.isSupported ? '' : '（不支持）'}` }}
-      </p>
       <!-- 内容（文本） -->
       <el-form-item
-        v-else
+        v-if="!isSoundRecordMsg"
         prop="content"
         class="input relative h-fit w-full !m-(b-2 t-2) sm:mt-0"
         style="padding: 0;margin:  0;"
@@ -813,14 +924,37 @@ onUnmounted(() => {
     </div>
   </el-form>
   <!-- 移动端菜单栏 -->
-
+  <Transition name="slide-height">
+    <div
+      v-if="showMobileTools && !isAiRoom && setting.isMobileSize"
+      class="w-full overflow-hidden"
+    >
+      <div class="grid-container min-h-28vh flex select-none">
+        <div class="grid grid-cols-4 my-a w-full gap-4 p-4">
+          <div
+            v-for="tool in mobileTools"
+            :key="tool.id"
+            class="flex-row-c-c flex-col gap-1 transition-200 hover:op-70"
+            :class="[tool.className, tool.disabled ? 'op-50 pointer-events-none' : 'cursor-pointer']"
+            @click="!tool.disabled ? tool.onClick?.() : undefined"
+          >
+            <span h-12 w-12 flex-row-c-c card-default>
+              <i class="p-3" :class="[tool.icon]" />
+            </span>
+            <span class="text-xs">{{ tool.label }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </Transition>
   <!-- 新建通知 -->
   <ChatGroupNoticeMsgDialog v-model:show="showGroupNoticeDialog" @submit="onSubmitGroupNoticeMsg" />
 </template>
 
 <style lang="scss" scoped>
 .form-tools {
-    --at-apply: "relative sm:h-62 flex flex-col justify-between p-2 border-default-t shadow-sm";
+    --at-apply: "relative sm:h-62 flex flex-col justify-between p-2 border-default-t";
+    box-shadow: rgba(0, 0, 0, 0.05) 0px -4px 4px;
     .tip {
     --at-apply: "op-0";
   }
@@ -976,5 +1110,24 @@ onUnmounted(() => {
   .bg-blur {
     --at-apply: " bg-(gray-5 op-30) backdrop-blur";
   }
+}
+
+// 添加高度渐变动画
+.slide-height-enter-active,
+.slide-height-leave-active {
+  transition: all 0.3s ease;
+  max-height: 28vh;
+  opacity: 1;
+  overflow: hidden;
+}
+
+.slide-height-enter-from,
+.slide-height-leave-to {
+  max-height: 0;
+  opacity: 0;
+}
+.grid-container {
+  height: auto;
+  transform-origin: top;
 }
 </style>
