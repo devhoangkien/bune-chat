@@ -1,5 +1,5 @@
 import type { isTrue, Result } from "@/types/result";
-import type { DeviceType } from ".";
+import type { DeviceType } from "./auth";
 import type { Gender, UserStatus } from "~/types";
 
 /**

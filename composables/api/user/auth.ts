@@ -7,24 +7,14 @@ import { StatusCode } from "@/types/result";
  * @returns promise
  */
 export async function toLoginByPwd(username: string, password: string, isAdmin: boolean = false): Promise<Result<{ accessToken: string; refreshToken: string; userId: string }>> {
-  const query = gql`
-    mutation login($input: LoginUserInput!) {
-      login(input: $input) {
-        accessToken
-        refreshToken
-        userId
-      }
-    }
-  `;
-
   const variables = { input: { email: username, password } };
-  const { mutate } = useMutation(query, { variables });
+  const { mutate } = useMutation(mutationlLogin, { variables });
   const result = await mutate();
   return {
     success: true,
     code: StatusCode.SUCCESS,
     message: "Login successful",
-    data: result?.data,
+    data: result?.data?.login,
   };
 }
 /**

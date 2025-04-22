@@ -2,7 +2,7 @@
 import type { FormInstance, FormRules } from "element-plus";
 import type { Result } from "~/types/result";
 import { MdPreview } from "md-editor-v3";
-import { DeviceType, getRegisterCode, toLoginByPwd } from "~/composables/api/user";
+import { DeviceType, getRegisterCode, toLoginByPwd } from "~/composables/api/user/auth";
 import { checkUsernameExists } from "~/composables/api/user/info";
 import { appTerms } from "~/constants";
 import { RegisterType } from "~/types/user/index.js";

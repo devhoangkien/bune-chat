@@ -1,6 +1,6 @@
 import type { UserInfoVO, UserWallet } from "../api/user/info";
 import { acceptHMRUpdate, defineStore } from "pinia";
-import { toLogout } from "../api/user";
+import { toLogout } from "../api/user/auth";
 import { getUserInfo } from "../api/user/info";
 import { getUserWallet } from "../api/user/wallet";
 

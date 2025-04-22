@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { DeviceType, getLoginCodeByType, toLoginByEmail, toLoginByPhone, toLoginByPwd } from "~/composables/api/user";
+import { DeviceType, getLoginCodeByType, toLoginByEmail, toLoginByPhone, toLoginByPwd } from "~/composables/api/user/auth";
 import { LoginType } from "~/types/user/index.js";
 
 const user = useUserStore();
@@ -201,25 +201,30 @@ async function onLogin(formEl: any | undefined) {
     }
     if (res.code === 20000) {
       // 登录成功
-      if (res.data) {
-        await store.onUserLogin(res.data, autoLogin.value, "/", (info) => {
-          // 初始化
-          useWsStore().reload();
-          // 保存账号
-          if (!autoLogin.value) {
-            return;
-          }
-          addHistoryAccount({
-            type: loginType.value,
-            account: userForm.value.username,
-            password: userForm.value.password,
-            userInfo: {
-              id: info.id,
-              avatar: info.avatar,
-              nickname: info.nickname,
-            },
-          });
+      console.log(res.data);
+      const data = res.data;
+      if (data) {
+        console.log("1111111111111", res.data);
+        const { onLogin } = useApollo();
+        // onLogin(data.accessToken)
+        // await store.onUserLogin(res.data, autoLogin.value, "/", (info) => {
+        // 初始化
+        useWsStore().reload();
+        // 保存账号
+        // if (!autoLogin.value) {
+        //   return;
+        // }
+        addHistoryAccount({
+          type: loginType.value,
+          account: userForm.value.username,
+          password: userForm.value.password,
+          userInfo: {
+            id: data.userId,
+            avatar: data.avatar,
+            nickname: data.email,
+          },
         });
+        // });
         done();
       }
       // 登录失败
@@ -243,9 +248,9 @@ async function onLogin(formEl: any | undefined) {
 }
 
 const options = [
-  { label: "邮箱登录", value: LoginType.EMAIL },
-  { label: "手机登录", value: LoginType.PHONE },
-  { label: "密码登录", value: LoginType.PWD },
+  { label: "Email", value: LoginType.EMAIL },
+  { label: "Phone", value: LoginType.PHONE },
+  { label: "Password", value: LoginType.PWD },
 ];
 
 const theHistoryAccount = ref({
@@ -283,7 +288,7 @@ function querySearchAccount(queryString: string, cb: (data: any[]) => void) {
   <el-form ref="formRef" :disabled="isLoading" label-position="top" hide-required-asterisk :rules="rules" :model="userForm" style="border: none" class="form" autocomplete="off">
     <template v-if="!user.isLogin">
       <div mb-4 text-sm tracking-0.2em op-80>
-        聊你所想，聊天随心✨
+        Chat whatever you want, chat as you like ✨
       </div>
       <!-- 切换登录 -->
       <el-segmented v-show="loginType !== LoginType.ADMIN" v-model="loginType" class="toggle-login grid grid-cols-3 mb-4 w-full gap-2 card-bg-color-2" :options="options" />
@@ -296,12 +301,12 @@ function querySearchAccount(queryString: string, cb: (data: any[]) => void) {
           autocomplete="off"
           :prefix-icon="ElIconMessage"
           size="large"
-          placeholder="请输入邮箱"
+          placeholder="Email"
           @keyup.enter="getLoginCode(loginType)"
         >
           <template #append>
             <el-button type="primary" :disabled="emailCodeStorage > 0 || isLoading" @click="getLoginCode(loginType)">
-              {{ emailCodeStorage > 0 ? `${emailCodeStorage}s后重新发送` : '获取验证码' }}
+              {{ emailCodeStorage > 0 ? `Resend after ${emailCodeStorage}s` : 'Send code' }}
             </el-button>
           </template>
         </el-input>
@@ -314,18 +319,18 @@ function querySearchAccount(queryString: string, cb: (data: any[]) => void) {
           size="large"
           type="tel"
           autocomplete="off"
-          placeholder="请输入手机号"
+          placeholder="Phone"
           @keyup.enter="getLoginCode(loginType)"
         >
           <template #append>
             <el-button type="primary" :disabled="phoneCodeStorage > 0 || isLoading" @click="getLoginCode(loginType)">
-              {{ phoneCodeStorage > 0 ? `${phoneCodeStorage}s后重新发送` : '获取验证码' }}
+              {{ phoneCodeStorage > 0 ? `Resend after ${phoneCodeStorage}s` : 'Send code' }}
             </el-button>
           </template>
         </el-input>
       </el-form-item>
       <el-form-item v-if="loginType === LoginType.EMAIL || loginType === LoginType.PHONE" prop="code" class="animated">
-        <el-input v-model.trim="userForm.code" :prefix-icon="ElIconChatDotSquare" autocomplete="off" size="large" placeholder="请输入验证码" @keyup.enter="onLogin(formRef)" />
+        <el-input v-model.trim="userForm.code" :prefix-icon="ElIconChatDotSquare" autocomplete="off" size="large" placeholder="Please enter the verification code" @keyup.enter="onLogin(formRef)" />
       </el-form-item>
       <!-- 密码登录 -->
       <el-form-item v-if="loginType === LoginType.PWD || loginType === LoginType.ADMIN" label="" prop="username" class="animated">
@@ -343,7 +348,7 @@ function querySearchAccount(queryString: string, cb: (data: any[]) => void) {
           teleported
           hide-loading
           value-key="account"
-          placeholder="请输入用户名、手机号或邮箱"
+          placeholder="Username, Phone or Email"
           @select="handleSelectAccount"
         >
           <template #default="{ item }">
@@ -351,11 +356,11 @@ function querySearchAccount(queryString: string, cb: (data: any[]) => void) {
               <el-avatar :size="30" class="mr-2 flex-shrink-0" :src="BaseUrlImg + item.userInfo.avatar" />
               <span class="block max-w-14em truncate">{{ item.account }}</span>
               <i
-                title="删除"
+                title="Delete"
                 class="i-carbon:close ml-a h-0 w-0 flex-shrink-0 overflow-hidden transition-all group-hover:(h-1.5em w-1.5em) btn-danger"
                 @click.stop.capture="removeHistoryAccount(item.account)"
               />
-              <span v-if="item.type === LoginType.ADMIN" class="ml-2 flex-shrink-0 rounded-4px bg-theme-primary px-1 py-1px text-xs text-white">管理员</span>
+              <span v-if="item.type === LoginType.ADMIN" class="ml-2 flex-shrink-0 rounded-4px bg-theme-primary px-1 py-1px text-xs text-white">Administrator</span>
             </div>
           </template>
         </el-autocomplete>
@@ -366,7 +371,7 @@ function querySearchAccount(queryString: string, cb: (data: any[]) => void) {
           :prefix-icon="ElIconLock"
           autocomplete="off"
           size="large"
-          placeholder="请输入密码"
+          placeholder="Password"
           show-password
           type="password"
           @keyup.enter="onLogin(formRef)"
@@ -377,25 +382,25 @@ function querySearchAccount(queryString: string, cb: (data: any[]) => void) {
           type="primary"
           class="submit w-full tracking-0.2em shadow"
           style="padding: 20px"
-          :loading="user.isOnLogining"
           @keyup.enter="onLogin(formRef)"
           @click="onLogin(formRef)"
         >
-          登录
+          <!-- :loading="user.isOnLogining" -->
+          Log in
         </el-button>
       </el-form-item>
       <!-- 底部 -->
       <div class="mt-2 text-right text-0.8em sm:mt-4 sm:text-sm">
         <el-checkbox v-model="autoLogin" class="mt-1" style="padding: 0; font-size: inherit; float: left; height: fit-content">
-          记住我
+          Remember Me
         </el-checkbox>
         <span
           class="mr-2 cursor-pointer border-r-(1px [var(--el-border-color-base)] solid) pr-2 transition-300"
           @click="loginType = loginType === LoginType.ADMIN ? LoginType.PHONE : LoginType.ADMIN"
         >
-          {{ loginType !== LoginType.ADMIN ? '管理员' : '用户登录' }}
+          {{ loginType !== LoginType.ADMIN ? 'Administrator' : 'User login' }}
         </span>
-        <span cursor-pointer class="text-color-primary" transition-300 @click="toRegister"> 注册账号 </span>
+        <span cursor-pointer class="text-color-primary" transition-300 @click="toRegister"> Register an account </span>
       </div>
     </template>
     <template v-else>
@@ -403,26 +408,25 @@ function querySearchAccount(queryString: string, cb: (data: any[]) => void) {
         <CardElImage :src="BaseUrlImg + user.userInfo.avatar" class="h-6rem w-6rem sm:(h-8rem w-8rem) border-default card-default" />
         <div text-center>
           <span>
-            {{ user.userInfo.username || '未登录' }}
+            {{ user.userInfo.username || 'Not logged in' }}
           </span>
           <br>
-          <small op-80 el-color-info>（{{ user.userInfo.username ? '已登录' : '请登录' }}）</small>
+          <small op-80 el-color-info>（{{ user.userInfo.username ? 'Already logged in' : 'Please log in' }}）</small>
         </div>
         <div>
           <BtnElButton
             style="width: 8em"
             type="primary"
             transition-icon
-            :loading="user.isOnLogining"
             icon-class="i-solar-alt-arrow-left-bold"
             mr-2
             sm:mr-4
             @click="navigateTo('/')"
           >
-            {{ user.isOnLogining ? '登录中...' : '前往聊天' }}
+            {{ user.isOnLogining ? 'Logging in...' : 'Go to chat' }}
           </BtnElButton>
           <BtnElButton style="width: 8em" type="danger" transition-icon plain icon-class="i-solar:logout-3-broken" @click="user.exitLogin">
-            退出登录
+            Log out
           </BtnElButton>
         </div>
       </div>

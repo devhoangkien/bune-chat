@@ -34,6 +34,11 @@ export default defineNuxtConfig({
     },
   },
   apollo: {
+    autoImports: true,
+    authType: "Bearer",
+    authHeader: "Authorization",
+    tokenStorage: "cookie",
+    proxyCookies: true,
     clients: {
       default: {
         httpEndpoint: GQL_HOST,
