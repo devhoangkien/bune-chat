@@ -104,8 +104,7 @@ class MessageQueueManager {
 export function useMessageQueue() {
   const queueManager = new MessageQueueManager();
   const isProcessingQueue = ref(false);
-  const maxRetryCount = 3; // 最大重试次数
-  const processingDelay = 200; // 处理间隔(ms)
+  const processingDelay = 80; // 处理间隔(ms)
 
   // 消息队列的响应式引用 - 不再需要computed，因为队列本身已经是响应式的
   const messageQueue = computed(() => queueManager.getAll());

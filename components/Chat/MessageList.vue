@@ -235,9 +235,11 @@ function onScroll(e: { scrollTop: number; scrollLeft: number; }) {
   // 滚动到底部
   if (chat.theRoomId && e.scrollTop >= (scrollbarRef?.value?.wrapRef?.scrollHeight || 0) + offset.value) {
     chat.shouldAutoScroll = chat.theContact?.msgList?.[(chat.theContact.msgList?.length || 0) - 1]?.message?.type === MessageType.AI_CHAT_REPLY; // ai消息是否为会话最后一条
+    chat.isScrollBottom = true;
     debounceReadList(chat.theRoomId);
   }
   else {
+    chat.isScrollBottom = false;
     chat.shouldAutoScroll = false;
   }
 }

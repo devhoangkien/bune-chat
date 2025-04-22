@@ -105,6 +105,7 @@ export const useChatStore = defineStore(
     const isVisible = ref(false); // 是否可见
     const isMsgListScroll = ref(false); // 消息列表是否滚动
     const shouldAutoScroll = ref(false); // 是否自动滚动
+    const isScrollBottom = ref(false); // 是否滚动到底部
     const playSounder = ref<PlaySounder>({
       state: "stop",
       url: "",
@@ -955,6 +956,7 @@ export const useChatStore = defineStore(
       showTheFriendPanel.value = false;
       isMsgListScroll.value = false;
       shouldAutoScroll.value = false;
+      isScrollBottom.value = false;
       isVisible.value = false;
       scrollTopSize.value = 0;
       saveScrollTop();
@@ -1004,6 +1006,7 @@ export const useChatStore = defineStore(
       isOpenContact,
       isMsgListScroll,
       shouldAutoScroll,
+      isScrollBottom,
       showVideoDialog,
       notDialogShow,
       roomGroupPageInfo,

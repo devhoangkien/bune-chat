@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { appName } from "@/constants/index";
+
 const setting = useSettingStore();
 const chat = useChatStore();
 // @unocss-include
@@ -20,6 +22,20 @@ async function toggleContactOpen() {
   }
   chat.isOpenContact = !chat.isOpenContact;
 }
+const getAppTitle = computed(() => {
+  if (route.path === "/")
+    return appName;
+  else if (route.path === "/friend")
+    return "联系人";
+  else if (route.path === "/ai")
+    return "AI";
+  else if (route.path === "/user")
+    return "用户";
+  else if (route.path === "/user/safe")
+    return "账号与安全";
+  else if (route.path === "/setting")
+    return "设置";
+});
 </script>
 
 <template>
@@ -33,7 +49,7 @@ async function toggleContactOpen() {
           <img src="/logo.png" class="h-2rem w-2rem" alt="logo">
         </NuxtLink>
         <h4 hidden sm:block>
-          极物聊天
+          {{ getAppTitle }}
         </h4>
         <div
           class="btn-primary"

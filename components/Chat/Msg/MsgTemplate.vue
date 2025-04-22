@@ -66,7 +66,8 @@ const showTranslation = computed(() => !!body.value?._textTranslation);
       <!-- 昵称和插槽区域 -->
       <div class="flex-res">
         <small class="nickname flex-1 truncate" ctx-name="nickname">{{ data.fromUser.nickName }}</small>
-        <slot name="name-after" />        <!-- 发送状态 -->
+        <slot name="name-after" />
+        <!-- 发送状态 -->
         <ChatMsgSendStatus v-if="sendStatus" :status="sendStatus" :msg-id="data.message.id" />
       </div>
       <!-- 内容 - 使用插槽 -->
@@ -92,7 +93,7 @@ const showTranslation = computed(() => !!body.value?._textTranslation);
       <small
         v-if="showAtMe"
         ctx-name="atUidList"
-        class="flex-ml-a at-list"
+        class="at-list flex-ml-a"
       >
         有人@我
       </small>

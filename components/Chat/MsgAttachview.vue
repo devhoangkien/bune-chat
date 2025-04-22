@@ -27,6 +27,7 @@ const emit = defineEmits<{
   (e: "clearReply"): void;
   (e: "scrollBottom"): void;
 }>();
+const chat = useChatStore();
 
 /**
  * 右键菜单
@@ -67,7 +68,7 @@ function onContextFileMenu(e: MouseEvent, key?: string, index: number = 0, type:
   <div class="absolute w-full flex flex-col p-2 -transform-translate-y-full" @click.prevent>
     <!-- 滚动底部 -->
     <div
-      v-if="(theContact?.msgList?.length || 0) > 20"
+      v-show="!chat.isScrollBottom"
       data-fade
       class="mb-2 ml-a mr-2 w-fit rounded-full px-3 text-right shadow-lg btn-info card-bg-color border-default-hover"
       @click="emit('scrollBottom')"
