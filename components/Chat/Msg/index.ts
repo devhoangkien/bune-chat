@@ -27,6 +27,11 @@ export function onMsgContextMenu(e: MouseEvent, data: ChatMessageVO<any>, onDown
     return;
   }
 
+  // 如果是未发送成功的消息
+  if (chat.isExsistQueue(data.message.id)) {
+    return;
+  }
+
   // 为AI回复设置上下文名称
   if (!ctxName && isAiReplyMsg) {
     ctxName = "aiReply";

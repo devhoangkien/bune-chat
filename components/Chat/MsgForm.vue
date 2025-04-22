@@ -114,7 +114,7 @@ async function onSubmit() {
         // modelCode: 1,
         userIds: aiRobitUidList.length > 0 ? aiRobitUidList : undefined,
         businessCode: AiBusinessType.TEXT,
-      };
+      } as AiChatBodyDTO;
       formDataTemp.msgType = MessageType.AI_CHAT; // 设置对应消息类型
     }
   };
@@ -147,11 +147,11 @@ async function onSubmit() {
       formDataTemp.body.url = key;
       formDataTemp.body.translation = audioTransfromText.value;
       formDataTemp.body.second = second.value;
-      submit(formDataTemp);
+      submitToQueue(formDataTemp);
     });
     return true;
   }
-  // 2) AI私聊房间
+  // 2) AI私聊
   if (isAiRoom.value) {
     const content = formDataTemp.content?.trim();
     if (!content)
@@ -160,48 +160,42 @@ async function onSubmit() {
       ElMessage.error("房间信息不完整！");
       return false;
     }
-    await submit({
+    await submitToQueue({
       roomId: chat.theRoomId!,
       msgType: MessageType.AI_CHAT, // AI消息
       content,
       body: {
-        userId: chat.theContact?.targetUid,
+        userIds: [chat.theContact?.targetUid],
         businessCode: AiBusinessType.TEXT,
-      },
+      } as AiChatBodyDTO,
     });
     return true;
   }
   // 3) 普通消息
-  await submit(formDataTemp);
+  await submitToQueue(formDataTemp);
   return true;
 }
 
 /**
- *
+ * 将消息提交到队列
  */
-async function submit(formData: ChatMessageDTO = chat.msgForm, callback?: (msg: ChatMessageVO) => void) {
+async function submitToQueue(formData: ChatMessageDTO = chat.msgForm, callback?: (msg: ChatMessageVO) => void) {
   const roomId = chat.theRoomId!;
-  const res = await addChatMessage({
+
+  // 添加到消息队列
+  chat.addToMessageQueue({
     ...formData,
     roomId,
-  }, user.getToken).finally(() => {
-    isSending.value = false;
-  });
-  if (res.code === StatusCode.SUCCESS) {
+  }, (msg: ChatMessageVO) => {
     // 发送信息后触发
-    emit("submit", res.data);
-    // 追加消息
-    chat?.appendMsg(res.data);
-    await nextTick();
-    chat.scrollBottom?.(false);
-    // 消息阅读上报（延迟）
-    chat.setReadList(roomId, true);
+    emit("submit", msg);
     resetForm();
-    typeof callback === "function" && callback(res.data); // 执行回调
-  }
-  else if (res.message === "您和对方已不是好友！") {
-    resetForm();
-  }
+    typeof callback === "function" && callback(msg); // 执行回调
+  });
+
+  // 重置表单
+  resetForm();
+  isSending.value = false;
 }
 
 /**
@@ -224,7 +218,7 @@ async function multiSubmitImg() {
         size: file?.file?.size || 0,
       },
     };
-    await submit(chat.msgForm); // 等待提交完成
+    await submitToQueue(chat.msgForm); // 提交到队列
     uploadedFiles.add(file.key); // 标记文件为已上传
   }
   // 一次性移除所有已上传的文件
@@ -240,7 +234,7 @@ async function multiSubmitImg() {
       roomId: chat.theRoomId!,
       msgType: MessageType.TEXT, // 默认
     };
-    await submit(chat.msgForm);
+    await submitToQueue(chat.msgForm);
   }
   isSending.value = false;
 }
@@ -262,7 +256,7 @@ function onSubmitGroupNoticeMsg(formData: ChatMessageDTO) {
     },
   };
   const body = formData?.body as any;
-  submit({
+  submitToQueue({
     roomId: chat.theRoomId!,
     msgType: MessageType.GROUP_NOTICE,
     content: formData.content,

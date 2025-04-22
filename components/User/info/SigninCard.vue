@@ -31,34 +31,34 @@ function submit() {
       </div>
     </div>
     <!-- 签到按钮 -->
-    <div class="btn my-4">
+    <div class="btn mb-8 mt-4">
       <btn-el-button type="info" icon-class="i-solar:dollar-bold-duotone mr-1" :transition-icon="true" @click="submit">
         签 到
       </btn-el-button>
       <small
-        ml-3 truncate text-0.7em opacity-80
+        truncate opacity-80
       >
         每日签到+100积分
+        <el-popover
+          :width="160"
+          trigger="hover"
+        >
+          <template #reference>
+            <small
+              cursor-pointer
+              text-blueGray
+              underline
+            >
+              如何获取积分?
+              <i
+                i-solar:dollar-linear ml-2 p-2 text-bluegray
+              />
+            </small>
+          </template>
+          <p>1、通过钱包额度充值</p>
+          <p>2、通过每日签到</p>
+        </el-popover>
       </small>
     </div>
-    <el-popover
-      :width="160"
-      trigger="hover"
-    >
-      <template #reference>
-        <small
-          cursor-pointer
-          text-blueGray
-          underline
-        >
-          如何获取积分?
-          <i
-            i-solar:dollar-linear ml-2 p-2 text-bluegray
-          />
-        </small>
-      </template>
-      <p>1、通过钱包额度充值</p>
-      <p>2、通过每日签到</p>
-    </el-popover>
   </div>
 </template>

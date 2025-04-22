@@ -162,6 +162,110 @@ export enum MessageType {
   GROUP_NOTICE = 13, // 群通知消息
 }
 
+/**
+ * 构建回复消息体
+ * @param roomId 房间号
+ * @param replyId 回复id
+ * @returns 回复消息体
+ */
+export function buildReplyVO(roomId: number, replyId: number): ReplyMsgVO | undefined {
+  const chat = useChatStore();
+  const replyMsg = chat.findMsg(roomId, replyId);
+  if (!replyMsg?.message || !roomId || !replyId) {
+    return undefined;
+  }
+  return {
+    id: replyId,
+    uid: replyMsg.fromUser.userId,
+    nickName: replyMsg.fromUser.nickName,
+    type: replyMsg.message.type!,
+    canCallback: isTrue.TRUE,
+    gapCount: 0,
+    body: resolveMsgContactText(replyMsg) || "",
+  };
+}
+
+export const msgBodyVOBuilderMap = {
+  [MessageType.TEXT]: (formData: ChatMessageDTO): TextBodyMsgVO => { // 文本消息
+    const body = formData.body as TextBodyDTO;
+    return {
+      urlContentMap: {},
+      atUidList: body?.atUidList || [],
+      reply: body?.replyMsgId
+        ? buildReplyVO(formData.roomId!, Number(body.replyMsgId))
+        : undefined,
+    };
+  },
+  [MessageType.IMG]: (formData: ChatMessageDTO): ImgBodyMsgVO => { // 图片消息
+    const body = formData.body as ImgBodyDTO;
+    return {
+      url: body.url,
+      size: body.size,
+      width: body.width,
+      height: body.height,
+      reply: body?.replyMsgId
+        ? buildReplyVO(formData.roomId!, Number(body.replyMsgId))
+        : undefined,
+    };
+  },
+  [MessageType.SOUND]: (formData: ChatMessageDTO) => { // 语音消息
+    const body = formData.body as SoundBodyDTO;
+    return {
+      url: body.url,
+      second: body.second,
+      translation: body.translation,
+    };
+  },
+  [MessageType.VIDEO]: (formData: ChatMessageDTO) => { // 视频消息
+    const body = formData.body as VideoBodyDTO;
+    return {
+      url: body.url,
+      size: body.size,
+      duration: body.duration,
+      thumbUrl: body.thumbUrl,
+      thumbSize: body.thumbSize,
+      thumbWidth: body.thumbWidth,
+      thumbHeight: body.thumbHeight,
+    };
+  },
+  [MessageType.FILE]: (formData: ChatMessageDTO) => { // 文件消息
+    const body = formData.body as FileBodyDTO;
+    return {
+      url: body.url,
+      size: body.size,
+      fileName: body.fileName || "其他文件名",
+      mimeType: body.mimeType,
+      fileType: body.fileType,
+    };
+  },
+  [MessageType.AI_CHAT]: (formData: ChatMessageDTO): AiChatBodyMsgVO => { // AI发起消息
+    const body = formData.body as AiChatBodyDTO;
+    const robotList = [];
+    return {
+      userId: body.businessCode.toString(),
+      robotInfo: undefined,
+      robotList: undefined,
+      businessCode: body.businessCode,
+    };
+  },
+  [MessageType.GROUP_NOTICE]: (formData: ChatMessageDTO): GroupNoticeBodyMsgVO => {
+    const body = formData.body as GroupNoticeBodyDTO;
+    return {
+      noticeAll: body.noticeAll || 0,
+      imgList: body.imgList || [],
+      reply: body.replyMsgId
+        ? {
+            id: 0,
+            uid: "",
+            nickName: "",
+            type: MessageType.TEXT,
+            canCallback: 0,
+            gapCount: 0,
+          }
+        : undefined,
+    };
+  },
+} as const;
 
 /**
  * 消息返回体
@@ -239,15 +343,7 @@ export interface TextBodyMsgVO {
   // content: string;
   urlContentMap: { [key: string]: UrlInfoDTO };
   atUidList: string[];
-  reply: {
-    id: number;
-    uid: string;
-    nickName: string;
-    type: MessageType;
-    canCallback: isTrue;
-    gapCount: number;
-    body?: string
-  };
+  reply?: ReplyMsgVO;
   // [property: string]: any;
 }
 /**
@@ -261,7 +357,7 @@ export type SystemBodyMsgVO = string;
 export interface GroupNoticeBodyMsgVO {
   noticeAll?: isTrue;
   imgList: string[];
-  reply: {
+  reply?: {
     id: number;
     uid: string;
     nickName: string;
@@ -280,6 +376,15 @@ export interface UrlInfoDTO {
    */
   image?: string;
 
+}
+export interface ReplyMsgVO {
+  id: number;
+  uid: string;
+  nickName: string;
+  type: MessageType;
+  canCallback: isTrue;
+  gapCount: number;
+  body?: string;
 }
 
 /**
@@ -306,21 +411,7 @@ export interface ImgBodyMsgVO {
   size?: number;
   width?: number;
   height?: number;
-  reply: {
-    id: number;
-    uid: string;
-    nickName: string;
-    type: MessageType;
-    /**
-     * 是否可消息跳转 0否 1是
-     */
-    canCallback: isTrue;
-    /**
-     * 跳转间隔的消息条数
-     */
-    gapCount: number;
-    body?: any;
-  };
+  reply?: ReplyMsgVO;
 }
 
 
@@ -335,21 +426,7 @@ export interface VideoBodyMsgVO {
   thumbSize?: number;
   thumbWidth?: number;
   thumbHeight?: number;
-  reply: {
-    id: number;
-    uid: string;
-    nickName: string;
-    type: MessageType;
-    /**
-     * 是否可消息跳转 0否 1是
-     */
-    canCallback: isTrue;
-    /**
-     * 跳转间隔的消息条数
-     */
-    gapCount: number;
-    body?: any;
-  };
+  reply?: ReplyMsgVO;
 }
 
 /**
@@ -361,21 +438,7 @@ export interface FileBodyMsgVO {
   fileName: string;
   mimeType?: string;
   fileType?: FileBodyMsgTypeEnum;
-  reply: {
-    id: number;
-    uid: string;
-    nickName: string;
-    type: MessageType;
-    /**
-     * 是否可消息跳转 0否 1是
-     */
-    canCallback: isTrue;
-    /**
-     * 跳转间隔的消息条数
-     */
-    gapCount: number;
-    body?: any;
-  };
+  reply?: ReplyMsgVO;
 }
 
 
@@ -412,11 +475,11 @@ export interface AiChatBodyMsgVO {
   /**
    * 机器人信息
    */
-  robotInfo: RobotUserVO;
+  robotInfo?: RobotUserVO;
   /**
    * 机器人列表
    */
-  robotList: RobotUserVO[];
+  robotList?: RobotUserVO[];
   /**
    * 机器人业务类型
    * 文生 1：文本 2：图片 3：视频
@@ -486,13 +549,13 @@ export interface ChatMessageDTO {
    */
   roomId: number;
   /**
+   * 消息类型
+   */
+  msgType: CanSendMessageType;
+  /**
    * 文本消息（可选）
    */
   content?: string;
-  /**
-   * 消息类型
-   */
-  msgType?: CanSendMessageType;
   /**
    * 消息内容，类型不同传值不同
    */
@@ -521,11 +584,12 @@ export interface ImgBodyDTO {
   size?: number;
   width?: number;
   height?: number;
-  replyMsgId?: string;
+  replyMsgId?: number;
 }
 export interface SoundBodyDTO {
   fileName: string;
   url: string;
+  translation?: string;
   second: number;
 }
 export interface RecallBodyDTO {
@@ -534,6 +598,7 @@ export interface RecallBodyDTO {
 }
 
 export interface FileBodyDTO {
+  fileName: string;
   url: string;
   size: number;
   fileType?: FileBodyMsgTypeEnum;
@@ -551,9 +616,8 @@ export interface VideoBodyDTO {
 }
 
 export interface AiChatBodyDTO {
-  // modelCode: number;
+  userIds: string[];
   businessCode: AiBusinessType;
-  content: string;
 }
 
 export interface GroupNoticeBodyDTO {

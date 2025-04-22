@@ -1,7 +1,9 @@
 import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
 import { acceptHMRUpdate, defineStore } from "pinia";
+import { useMessageQueue } from "../hooks/useMessageQueue";
 
 const CONTACT_CACHE_TIME = 5 * 60 * 1000; // 5分钟
+
 export interface PlaySounder {
   state?: "play" | "pause" | "stop" | "loading" | "error"
   url?: string
@@ -37,6 +39,7 @@ export const useChatStore = defineStore(
       body: {
       },
     });
+
     /** ---------------------------- 扩展打开 ---------------------------- */
     const showExtension = ref(false);
     const pageTransition = ref<{
@@ -124,6 +127,58 @@ export const useChatStore = defineStore(
         },
       });
     };
+
+    /** ---------------------------- 消息队列 ---------------------------- */
+    // 使用新的消息队列hook
+    const {
+      messageQueue,
+      isProcessingQueue,
+      isExsist: isExsistQueue,
+      get: getMsgQueue,
+      addToMessageQueue,
+      processMessageQueue,
+      retryMessage,
+      clearMessageQueue,
+      msgBuilder,
+    } = useMessageQueue();
+
+    // 添加消息到聊天记录并处理临时消息
+    const appendMsgWithTemp = (msg: ChatMessageVO, tempId?: number | string) => {
+      // 如果有临时ID，查找并替换临时消息
+      const roomId = msg.message.roomId;
+      if (tempId && roomId) {
+        const msgList = contactMap.value[roomId]?.msgList || [];
+        const tempIndex = msgList.findIndex(m => m.message.id && m.message.id === tempId);
+
+        if (tempIndex !== -1) {
+          // 替换临时消息
+          msgList[tempIndex] = msg as ChatMessageVO;
+          return;
+        }
+      }
+      appendMsg(msg);
+    };
+    // 监听消息队列事件
+    mitter.on(MittEventType.MESSAGE_QUEUE, ({ type, payload }) => {
+      const { msg, queueItem } = payload || {};
+      if (type === "add" && msg) {
+        if (theRoomId.value && theRoomId.value === msg.message.roomId) {
+          appendMsg(msg);
+          nextTick(() => scrollBottom?.(false));
+        }
+      }
+      else if (type === "success" && msg) { // 更新临时消息为服务器返回的消息
+        if (queueItem && queueItem.id) {
+          appendMsgWithTemp(msg, queueItem.id);
+        }
+        // 消息阅读上报（延迟）
+        if (msg.message.roomId) {
+          setReadList(msg.message.roomId, true);
+        }
+      }
+      else if (type === "error") { // 消息发送失败
+      }
+    });
 
     /* ------------------------------------------- 房间操作 ------------------------------------------- */
     // 房间
@@ -510,6 +565,11 @@ export const useChatStore = defineStore(
     function appendMsg(data: ChatMessageVO, successSend: boolean = false) {
       const roomId = data.message.roomId;
       const existsMsg = findMsg(roomId, data.message.id);
+      if (existsMsg) {
+        existsMsg.fromUser = data?.fromUser;
+        existsMsg.message = data?.message;
+        return;
+      }
       if (!existsMsg && contactMap.value?.[roomId]?.msgList) {
         // 需要排序
         const lastMsg = contactMap.value[roomId].msgList[contactMap.value[roomId].msgList.length - 1];
@@ -949,6 +1009,18 @@ export const useChatStore = defineStore(
       roomGroupPageInfo,
       playSounder,
       isVisible,
+
+      // 消息队列相关
+      messageQueue,
+      isProcessingQueue,
+      isExsistQueue,
+      getMsgQueue,
+      addToMessageQueue,
+      processMessageQueue,
+      retryMessage,
+      clearMessageQueue,
+      msgBuilder,
+      appendMsgWithTemp,
 
       // 群成员
       memberPageInfo,

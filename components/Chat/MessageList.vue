@@ -31,7 +31,6 @@ const isReload = computed({
 // 滚动
 const scrollbarRef = useTemplateRef("scrollbarRef");
 const timer = ref<any>(0);
-
 /**
  * 加载数据
  */
@@ -259,6 +258,12 @@ onMounted(() => {
         break;
     }
   });
+
+  mitter.on(MittEventType.MESSAGE_QUEUE, (payload: MessageQueuePayload) => {
+    if (payload.type === "success" || payload.type === "error") {
+      // 消息发送成功或失败
+    }
+  });
 });
 
 onBeforeUnmount(() => {
@@ -266,6 +271,7 @@ onBeforeUnmount(() => {
   timer.value = null;
   // 解绑事件
   mitter.off(MittEventType.MSG_LIST_SCROLL);
+  mitter.off(MittEventType.MESSAGE_QUEUE);
 });
 
 // 暴露

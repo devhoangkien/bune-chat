@@ -28,16 +28,30 @@ function clearTranslation() {
     body.value._textTranslation = undefined;
   }
 }
+
+// 状态计算只在需要时进行
+const sendStatus = computed(() => {
+  if (typeof data.message.id === "string") {
+    return chat.getMsgQueue(data.message.id as any)?.status;
+  }
+  return undefined;
+});
+
+// 计算是否需要显示回复
+const showReply = computed(() => !!body.value?.reply);
+
+// 计算是否需要显示@提醒
+const showAtMe = computed(() =>
+  !!body.value?.atUidList?.length
+  && body.value.atUidList.includes(user?.userInfo?.id),
+);
+
+// 计算是否需要显示翻译
+const showTranslation = computed(() => !!body.value?._textTranslation);
 </script>
 
 <template>
-  <div
-    v-bind="$attrs"
-    class="msg"
-    :class="{
-      self: isSelf,
-    }"
-  >
+  <div class="msg" :class="{ self: isSelf }" v-bind="$attrs">
     <!-- 头像 -->
     <CardElImage
       ctx-name="avatar"
@@ -47,47 +61,45 @@ function clearTranslation() {
       class="avatar h-2.4rem w-2.4rem flex-shrink-0 cursor-pointer rounded-1/2 object-cover border-default"
       @click="$emit('clickAvatar', data.fromUser.userId)"
     />
-    <!-- 消息体 -->
+    <!-- 消息体 - 合并了一些嵌套结构 -->
     <div class="body">
+      <!-- 昵称和插槽区域 -->
       <div class="flex-res">
-        <!-- 昵称 -->
-        <small class="nickname flex-1 truncate" ctx-name="nickname">
-          {{ data.fromUser.nickName }}
-        </small>
-        <!-- 插槽 -->
-        <slot name="name-after" />
-        <!-- <small class="sendTime text-0.7em op-0" ctx-name="sendTime">
-          {{ dayjs(data.message.sendTime).format("YYYY-MM-DD HH:mm:ss") }}
-        </small> -->
+        <small class="nickname flex-1 truncate" ctx-name="nickname">{{ data.fromUser.nickName }}</small>
+        <slot name="name-after" />        <!-- 发送状态 -->
+        <ChatMsgSendStatus v-if="sendStatus" :status="sendStatus" :msg-id="data.message.id" />
       </div>
-      <!-- 内容 -->
-      <slot name="body">
+      <!-- 内容 - 使用插槽 -->
+      <slot name="body" :send-status="sendStatus">
         <p class="msg-popper msg-wrap" ctx-name="content">
           {{ data.message.content }}
         </p>
       </slot>
-      <!-- 回复 -->
+
+      <!-- 回复 - 使用v-if减少DOM -->
       <small
-        v-if="body?.reply"
+        v-if="showReply"
         title="点击跳转"
         ctx-name="reply"
         class="reply"
         @click="chat.scrollReplyMsg(body?.reply?.id || 0, body?.reply?.gapCount, false)"
       >
         <i class="i-solar:forward-2-bold-duotone mr-1 p-2" />
-        {{ `${body.reply.nickName} : ${body.reply?.body?.substring(0, 50) || ''}` }}
+        {{ `${body?.reply?.nickName} : ${body?.reply?.body?.substring(0, 50) || ''}` }}
       </small>
-      <!-- AT @ -->
+
+      <!-- AT @ - 使用v-if减少DOM -->
       <small
-        v-if="body?.atUidList?.length && body?.atUidList.includes(user?.userInfo?.id)"
+        v-if="showAtMe"
         ctx-name="atUidList"
-        class="at-list flex-ml-a"
+        class="flex-ml-a at-list"
       >
         有人@我
       </small>
-      <!-- 翻译内容 -->
+
+      <!-- 翻译内容 - 使用v-if减少DOM -->
       <div
-        v-if="body?._textTranslation"
+        v-if="showTranslation"
         key="translation"
         ctx-name="translation"
         class="group translation"
