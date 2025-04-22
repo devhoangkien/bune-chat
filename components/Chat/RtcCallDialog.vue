@@ -99,7 +99,7 @@ const dragRefStyle = ref({
   maxHeight: 0,
 });
 const disableDrag = computed(() => (setting.isMobileSize && !isMinWind.value) || !modelValue);
-const onMoveDb = useDebounceFn((position: Position) => {
+function onMoveDb(position: Position) {
   const { innerWidth, innerHeight } = window;
   // 限制不移出屏幕边缘
   const newX = Math.min(Math.max(position.x, 0), innerWidth - (dragRef?.value?.offsetWidth || 0));
@@ -115,7 +115,7 @@ const onMoveDb = useDebounceFn((position: Position) => {
     position.x = newX;
     position.y = newY;
   }
-}, 300);
+}
 const { x, y, style } = useDraggable(dragRef, {
   disabled: disableDrag,
   stopPropagation: true,

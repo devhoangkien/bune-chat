@@ -145,7 +145,7 @@ function onContextMenu(e: MouseEvent, item: ChatMemberVO) {
             label: "分享",
             icon: "i-solar:share-line-duotone",
             onClick: async () => {
-              const res = await useAsyncCopyText(`${window.location.origin}/user/info?id=${item.userId}`);
+              const res = await useAsyncCopyText(`${window.location.origin}/user?id=${item.userId}`);
               if (res) {
                 ElMessage.success("成功复制至剪贴板！");
               }

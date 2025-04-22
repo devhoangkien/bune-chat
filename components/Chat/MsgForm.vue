@@ -950,8 +950,8 @@ defineExpose({
 
 <style lang="scss" scoped>
 .form-tools {
-    --at-apply: "relative sm:h-62 flex flex-col justify-between p-2 border-default-t";
-    box-shadow: rgba(0, 0, 0, 0.08) 0px -1px 2px;
+    --at-apply: "relative sm:h-62 flex flex-col justify-between overflow-x-hidden p-2 border-default-2-t";
+    box-shadow: rgba(0, 0, 0, 0.02) 0px -6px 12px;
     .tip {
     --at-apply: "op-0";
   }
