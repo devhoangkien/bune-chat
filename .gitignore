@@ -1,0 +1,20 @@
+# Nuxt
+node_modules
+*.log*
+.nuxt
+.nitro
+.cache
+.output
+.env
+dist
+.DS_Store
+
+electron-dist
+debug.log
+debug.log
+*.log
+debug.json
+errors.json 
+.idea
+.env.*.local
+report.html

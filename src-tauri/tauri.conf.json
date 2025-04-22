@@ -1,0 +1,76 @@
+{
+  "productName": "JiwuChat",
+  "mainBinaryName": "JiwuChat",
+  "version": "../package.json",
+  "identifier": "com.jiwuchat.app",
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+    ],
+    "security": {
+      "capabilities": [
+        "default-capability",
+        "desktop-capability",
+        "mobile-capability"
+      ]
+    }
+  },
+  "build": {
+    "frontendDist": "../.output/public",
+    "devUrl": "http://localhost:3000"
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDU3RjREQTA3MkU1MzNEMzkKUldRNVBWTXVCOXIwVjlBVXhBY0J3WEVNZW5ZTWZSYXJNdlM4VmpoaXBrSDFiOU1QYk85RDBkYW0K",
+      "endpoints": ["https://api.jiwu.kiwi2333.top/res/app/latest"]
+    }
+  },
+  "bundle": {
+    "active": true,
+    "category": "SocialNetworking",
+    "copyright": "Kiwi2333",
+    "targets": "all",
+    "icon": ["icons/32x32.png", "icons/128x128.png", "icons/icon.icns", "icons/icon.ico", "icons/icon.png"],
+    "longDescription": "",
+    "licenseFile": "./LICENSE/LICENSE.txt",
+    "createUpdaterArtifacts": "v1Compatible",
+    "resources": [
+      "./res/**/*"
+    ],
+    "shortDescription": "",
+    "windows": {
+      "nsis": {
+        "installerIcon": "./icons/icon.ico"
+      },
+      "wix": {
+        "language": "zh-CN"
+      }
+    },
+    "android": {
+      "minSdkVersion": 24
+    },
+    "iOS": {
+      "minimumSystemVersion": "13.0"
+    },
+    "macOS": {
+      "entitlements": null,
+      "exceptionDomain": "",
+      "frameworks": [],
+      "providerShortName": null,
+      "signingIdentity": null,
+      "minimumSystemVersion": "10.13"
+    },
+    "linux": {
+      "appimage": {
+        "bundleMediaFramework": true,
+        "files": {}
+      },
+      "deb": {
+        "files": {
+          "/usr/share/README.md": "../README.md", 
+          "/usr/share/public": "../public/"
+        }
+      }
+    }
+  }
+}
