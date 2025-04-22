@@ -1,20 +1,10 @@
 <script lang="ts" setup>
-import {
-  DeviceType,
-  getLoginCodeByType,
-  toLoginByEmail,
-  toLoginByPhone,
-  toLoginByPwd,
-} from "~/composables/api/user";
+import { DeviceType, getLoginCodeByType, toLoginByEmail, toLoginByPhone, toLoginByPwd } from "~/composables/api/user";
 import { LoginType } from "~/types/user/index.js";
 
 const user = useUserStore();
 const loginType = useLocalStorage<LoginType>("loginType", LoginType.EMAIL);
-const {
-  historyAccounts,
-  addHistoryAccount,
-  removeHistoryAccount,
-} = useHistoryAccount();
+const { historyAccounts, addHistoryAccount, removeHistoryAccount } = useHistoryAccount();
 const isLoading = ref<boolean>(false);
 const autoLogin = ref<boolean>(true);
 // 表单
@@ -45,8 +35,7 @@ const rules = reactive({
   email: [
     { required: true, message: "邮箱不能为空！", trigger: "blur" },
     {
-      pattern:
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\])|(([a-z\-0-9]+\.)+[a-z]{2,}))$/i,
+      pattern: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\])|(([a-z\-0-9]+\.)+[a-z]{2,}))$/i,
       message: "邮箱格式不正确！",
       trigger: "blur",
     },
@@ -54,8 +43,7 @@ const rules = reactive({
   phone: [
     { required: true, message: "手机号不能为空！", trigger: "blur" },
     {
-      pattern:
-        /^(?:(?:\+|00)86)?1[3-9]\d{9}$/,
+      pattern: /^(?:(?:\+|00)86)?1[3-9]\d{9}$/,
       message: "手机号格式不正确！",
       trigger: "change",
     },
@@ -76,7 +64,7 @@ async function getLoginCode(type: LoginType) {
   try {
     // 获取邮箱验证码
     if (type === LoginType.EMAIL) {
-    // 简单校验
+      // 简单校验
       if (userForm.value.email.trim() === "")
         return;
       if (!checkEmail(userForm.value.email)) {
@@ -108,13 +96,13 @@ async function getLoginCode(type: LoginType) {
       isLoading.value = true;
       data = await getLoginCodeByType(userForm.value.phone, DeviceType.PHONE);
       if (data.code === 20000) {
-      // 开启定时器
+        // 开启定时器
         useInterval(phoneTimer, phoneCodeStorage, 60, -1);
         ElMessage.success({
           message: data.message,
           duration: 5000,
         });
-      // userForm.value.code = data.data;
+        // userForm.value.code = data.data;
       }
       else {
         ElMessage.closeAll("error");
@@ -169,7 +157,6 @@ function onCloseTimer() {
   }
 }
 
-
 const store = useUserStore();
 function toRegister() {
   store.showLoginAndRegister = "register";
@@ -192,7 +179,7 @@ async function onLogin(formEl: any | undefined) {
       return;
     isLoading.value = true;
     user.isOnLogining = true;
-    let res = { code: 20001, data: "", message: "登录失败！" };
+    let res: { code: number; data: any; message: string } = { code: 20001, data: "", message: "登录失败！" };
     try {
       switch (loginType.value) {
         case LoginType.PWD:
@@ -205,7 +192,7 @@ async function onLogin(formEl: any | undefined) {
           res = await toLoginByEmail(userForm.value.email, userForm.value.code);
           break;
         case LoginType.ADMIN:
-          res = await toLoginByPwd(userForm.value.username, userForm.value.password, true);
+          res = (await toLoginByPwd(userForm.value.username, userForm.value.password, true)) as { code: number; data: any; message: string };
           break;
       }
     }
@@ -293,35 +280,16 @@ function querySearchAccount(queryString: string, cb: (data: any[]) => void) {
 
 <template>
   <!-- 登录 -->
-  <el-form
-    ref="formRef"
-    :disabled="isLoading"
-    label-position="top"
-    hide-required-asterisk
-    :rules="rules"
-    :model="userForm"
-    style="border: none;"
-    class="form"
-    autocomplete="off"
-  >
+  <el-form ref="formRef" :disabled="isLoading" label-position="top" hide-required-asterisk :rules="rules" :model="userForm" style="border: none" class="form" autocomplete="off">
     <template v-if="!user.isLogin">
       <div mb-4 text-sm tracking-0.2em op-80>
         聊你所想，聊天随心✨
       </div>
       <!-- 切换登录 -->
-      <el-segmented
-        v-show="loginType !== LoginType.ADMIN"
-        v-model="loginType"
-        class="toggle-login grid grid-cols-3 mb-4 w-full gap-2 card-bg-color-2"
-        :options="options"
-      />
+      <el-segmented v-show="loginType !== LoginType.ADMIN" v-model="loginType" class="toggle-login grid grid-cols-3 mb-4 w-full gap-2 card-bg-color-2" :options="options" />
       <!-- 验证码登录(客户端 ) -->
       <!-- 邮箱登录 -->
-      <el-form-item
-        v-if="loginType === LoginType.EMAIL"
-        prop="email"
-        class="animated"
-      >
+      <el-form-item v-if="loginType === LoginType.EMAIL" prop="email" class="animated">
         <el-input
           v-model.trim="userForm.email"
           type="email"
@@ -332,23 +300,14 @@ function querySearchAccount(queryString: string, cb: (data: any[]) => void) {
           @keyup.enter="getLoginCode(loginType)"
         >
           <template #append>
-            <el-button
-              type="primary"
-              :disabled="emailCodeStorage > 0 || isLoading"
-              @click="getLoginCode(loginType)"
-            >
-              {{ emailCodeStorage > 0 ? `${emailCodeStorage}s后重新发送` : "获取验证码" }}
+            <el-button type="primary" :disabled="emailCodeStorage > 0 || isLoading" @click="getLoginCode(loginType)">
+              {{ emailCodeStorage > 0 ? `${emailCodeStorage}s后重新发送` : '获取验证码' }}
             </el-button>
           </template>
         </el-input>
       </el-form-item>
       <!-- 手机号登录 -->
-      <el-form-item
-        v-if="loginType === LoginType.PHONE"
-        type="tel"
-        prop="phone"
-        class="animated"
-      >
+      <el-form-item v-if="loginType === LoginType.PHONE" type="tel" prop="phone" class="animated">
         <el-input
           v-model.trim="userForm.phone"
           :prefix-icon="ElIconIphone"
@@ -359,37 +318,17 @@ function querySearchAccount(queryString: string, cb: (data: any[]) => void) {
           @keyup.enter="getLoginCode(loginType)"
         >
           <template #append>
-            <el-button
-              type="primary"
-              :disabled="phoneCodeStorage > 0 || isLoading"
-              @click="getLoginCode(loginType)"
-            >
-              {{ phoneCodeStorage > 0 ? `${phoneCodeStorage}s后重新发送` : "获取验证码" }}
+            <el-button type="primary" :disabled="phoneCodeStorage > 0 || isLoading" @click="getLoginCode(loginType)">
+              {{ phoneCodeStorage > 0 ? `${phoneCodeStorage}s后重新发送` : '获取验证码' }}
             </el-button>
           </template>
         </el-input>
       </el-form-item>
-      <el-form-item
-        v-if="loginType === LoginType.EMAIL || loginType === LoginType.PHONE"
-        prop="code"
-        class="animated"
-      >
-        <el-input
-          v-model.trim="userForm.code"
-          :prefix-icon="ElIconChatDotSquare"
-          autocomplete="off"
-          size="large"
-          placeholder="请输入验证码"
-          @keyup.enter="onLogin(formRef)"
-        />
+      <el-form-item v-if="loginType === LoginType.EMAIL || loginType === LoginType.PHONE" prop="code" class="animated">
+        <el-input v-model.trim="userForm.code" :prefix-icon="ElIconChatDotSquare" autocomplete="off" size="large" placeholder="请输入验证码" @keyup.enter="onLogin(formRef)" />
       </el-form-item>
       <!-- 密码登录 -->
-      <el-form-item
-        v-if="loginType === LoginType.PWD || loginType === LoginType.ADMIN "
-        label=""
-        prop="username"
-        class="animated"
-      >
+      <el-form-item v-if="loginType === LoginType.PWD || loginType === LoginType.ADMIN" label="" prop="username" class="animated">
         <el-autocomplete
           v-model.trim="userForm.username"
           autocomplete="off"
@@ -421,14 +360,7 @@ function querySearchAccount(queryString: string, cb: (data: any[]) => void) {
           </template>
         </el-autocomplete>
       </el-form-item>
-      <el-form-item
-        v-if="loginType === LoginType.PWD || loginType === LoginType.ADMIN"
-        type="password"
-        show-password
-        label=""
-        prop="password"
-        class="animated"
-      >
+      <el-form-item v-if="loginType === LoginType.PWD || loginType === LoginType.ADMIN" type="password" show-password label="" prop="password" class="animated">
         <el-input
           v-model.trim="userForm.password"
           :prefix-icon="ElIconLock"
@@ -440,7 +372,7 @@ function querySearchAccount(queryString: string, cb: (data: any[]) => void) {
           @keyup.enter="onLogin(formRef)"
         />
       </el-form-item>
-      <el-form-item style="margin: 0;">
+      <el-form-item style="margin: 0">
         <el-button
           type="primary"
           class="submit w-full tracking-0.2em shadow"
@@ -453,24 +385,17 @@ function querySearchAccount(queryString: string, cb: (data: any[]) => void) {
         </el-button>
       </el-form-item>
       <!-- 底部 -->
-      <div
-        class="mt-2 text-right text-0.8em sm:mt-4 sm:text-sm"
-      >
-        <el-checkbox v-model="autoLogin" class="mt-1" style="padding: 0;font-size: inherit;float: left; height: fit-content;">
+      <div class="mt-2 text-right text-0.8em sm:mt-4 sm:text-sm">
+        <el-checkbox v-model="autoLogin" class="mt-1" style="padding: 0; font-size: inherit; float: left; height: fit-content">
           记住我
         </el-checkbox>
         <span
           class="mr-2 cursor-pointer border-r-(1px [var(--el-border-color-base)] solid) pr-2 transition-300"
           @click="loginType = loginType === LoginType.ADMIN ? LoginType.PHONE : LoginType.ADMIN"
         >
-          {{ loginType !== LoginType.ADMIN ? "管理员" : "用户登录" }}
+          {{ loginType !== LoginType.ADMIN ? '管理员' : '用户登录' }}
         </span>
-        <span
-          cursor-pointer class="text-color-primary" transition-300
-          @click="toRegister"
-        >
-          注册账号
-        </span>
+        <span cursor-pointer class="text-color-primary" transition-300 @click="toRegister"> 注册账号 </span>
       </div>
     </template>
     <template v-else>
@@ -478,30 +403,25 @@ function querySearchAccount(queryString: string, cb: (data: any[]) => void) {
         <CardElImage :src="BaseUrlImg + user.userInfo.avatar" class="h-6rem w-6rem sm:(h-8rem w-8rem) border-default card-default" />
         <div text-center>
           <span>
-            {{ user.userInfo.username || "未登录" }}
+            {{ user.userInfo.username || '未登录' }}
           </span>
           <br>
-          <small op-80 el-color-info>（{{ user.userInfo.username ? "已登录" : "请登录" }}）</small>
+          <small op-80 el-color-info>（{{ user.userInfo.username ? '已登录' : '请登录' }}）</small>
         </div>
         <div>
           <BtnElButton
-            style="width: 8em;"
+            style="width: 8em"
             type="primary"
             transition-icon
             :loading="user.isOnLogining"
             icon-class="i-solar-alt-arrow-left-bold"
-            mr-2 sm:mr-4
+            mr-2
+            sm:mr-4
             @click="navigateTo('/')"
           >
-            {{ user.isOnLogining ? "登录中..." : "前往聊天" }}
+            {{ user.isOnLogining ? '登录中...' : '前往聊天' }}
           </BtnElButton>
-          <BtnElButton
-            style="width: 8em;"
-            type="danger"
-            transition-icon plain
-            icon-class="i-solar:logout-3-broken"
-            @click="user.exitLogin"
-          >
+          <BtnElButton style="width: 8em" type="danger" transition-icon plain icon-class="i-solar:logout-3-broken" @click="user.exitLogin">
             退出登录
           </BtnElButton>
         </div>
@@ -523,7 +443,6 @@ function querySearchAccount(queryString: string, cb: (data: any[]) => void) {
   // 报错信息
   :deep(.el-form-item) {
     padding: 0.3em 0.1em;
-
 
     .el-form-item__error {
       padding-top: 0;
@@ -568,6 +487,5 @@ function querySearchAccount(queryString: string, cb: (data: any[]) => void) {
   font-weight: 600;
   transition: 0.3s;
   cursor: pointer;
-
 }
 </style>

@@ -43,7 +43,6 @@ export const StatusCodeText: {
   [StatusCode.TOKEN_DEVICE_ERR]: "认证失败，登录设备有误！",
 };
 
-
 export enum Sort {
   ASC = 0,
   DESC = 1, // 降序

@@ -8,9 +8,7 @@ import { appTerms } from "~/constants";
 import { RegisterType } from "~/types/user/index.js";
 import "md-editor-v3/lib/preview.css";
 
-const {
-  size = "large",
-} = defineProps<{
+const { size = "large" } = defineProps<{
   size?: "large" | "small" | "default"
 }>();
 
@@ -62,8 +60,7 @@ const rules = reactive<FormRules>({
       validator(rule: any, value: string, callback: any) {
         if (registerType.value === RegisterType.PASSWORD && value !== formUser.password?.trim())
           callback(new Error("两次密码不一致"));
-        else
-          callback();
+        else callback();
       },
     },
   ],
@@ -79,8 +76,7 @@ const rules = reactive<FormRules>({
       validator(rule: any, value: string, callback: any) {
         if (value !== formUser.password?.trim())
           callback(new Error("两次密码不一致"));
-        else
-          callback();
+        else callback();
       },
     },
   ],
@@ -94,8 +90,7 @@ const rules = reactive<FormRules>({
   email: [
     { required: true, message: "邮箱不能为空！", trigger: "blur" },
     {
-      pattern:
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\])|(([a-z\-0-9]+\.)+[a-z]{2,}))$/i,
+      pattern: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\])|(([a-z\-0-9]+\.)+[a-z]{2,}))$/i,
       message: "邮箱格式不正确！",
       trigger: ["blur", "change"],
     },
@@ -181,9 +176,10 @@ async function getRegCode(type: RegisterType) {
       }
     }
   }
-  catch (err) { }
+  catch (err) {
+  }
   finally {
-  // 关闭加载
+    // 关闭加载
     isLoading.value = false;
   }
 }
@@ -322,14 +318,14 @@ async function toLogin(token?: string) {
   const data = await toLoginByPwd(formUser.username, formUser.password);
   // 自动登录成功
   store.$patch({
-    token: data.data,
+    token: data.data.accessToken,
     showLoginAndRegister: "",
     isLogin: true,
   });
   ElMessage.success({
     message: "登录成功！",
   });
-  store.onUserLogin(data.data);
+  store.onUserLogin(data.data.accessToken);
   isLoading.value = false;
 }
 
@@ -365,7 +361,7 @@ function toLoginForm() {
     v-loading="isLoading"
     :disabled="isLoading"
     label-position="top"
-    style="border: none;"
+    style="border: none"
     :element-loading-text="loadingText"
     element-loading-background="transparent"
     :element-loading-spinner="defaultLoadingIcon"
@@ -379,42 +375,18 @@ function toLoginForm() {
       开启你的专属圈子✨
     </h4>
     <!-- 切换注册 -->
-    <el-segmented
-      v-model="registerType"
-      :size="size"
-      style=""
-      class="toggle-btns grid grid-cols-3 mb-4 w-full gap-2 card-bg-color-2"
-      :options="options"
-    />
+    <el-segmented v-model="registerType" :size="size" style="" class="toggle-btns grid grid-cols-3 mb-4 w-full gap-2 card-bg-color-2" :options="options" />
     <!-- 验证码注册(客户端 ) -->
     <!-- 用户名 -->
     <el-form-item label="" prop="username" class="animated">
-      <el-input
-        v-model.lazy="formUser.username"
-        :prefix-icon="ElIconUser"
-        :size="size"
-        autocomplete="off"
-        placeholder="请输入用户名"
-      />
+      <el-input v-model.lazy="formUser.username" :prefix-icon="ElIconUser" :size="size" autocomplete="off" placeholder="请输入用户名" />
     </el-form-item>
     <!-- 邮箱 -->
-    <el-form-item
-      v-if="registerType === RegisterType.EMAIL"
-      prop="email"
-      class="animated"
-      autocomplete="off"
-    >
-      <el-input
-        v-model.trim="formUser.email"
-        type="email"
-        :prefix-icon="ElIconMessage"
-        :size="size"
-        autocomplete="off"
-        placeholder="请输入邮箱"
-      >
+    <el-form-item v-if="registerType === RegisterType.EMAIL" prop="email" class="animated" autocomplete="off">
+      <el-input v-model.trim="formUser.email" type="email" :prefix-icon="ElIconMessage" :size="size" autocomplete="off" placeholder="请输入邮箱">
         <template #append>
           <el-button type="primary" :disabled="emailCodeStorage > 0" @click="getRegCode(registerType)">
-            {{ emailCodeStorage > 0 ? `${emailCodeStorage}s后重新发送` : "获取验证码" }}
+            {{ emailCodeStorage > 0 ? `${emailCodeStorage}s后重新发送` : '获取验证码' }}
           </el-button>
         </template>
       </el-input>
@@ -424,7 +396,7 @@ function toLoginForm() {
       <el-input v-model.trim="formUser.phone" :prefix-icon="ElIconIphone" autocomplete="off" :size="size" placeholder="请输入手机号">
         <template #append>
           <el-button type="primary" :disabled="phoneCodeStorage > 0" @click="getRegCode(registerType)">
-            {{ phoneCodeStorage > 0 ? `${phoneCodeStorage}s后重新发送` : "获取验证码" }}
+            {{ phoneCodeStorage > 0 ? `${phoneCodeStorage}s后重新发送` : '获取验证码' }}
           </el-button>
         </template>
       </el-input>
@@ -434,65 +406,37 @@ function toLoginForm() {
       <el-input v-model.trim="formUser.code" :prefix-icon="ElIconChatDotSquare" :size="size" autocomplete="off" placeholder="请输入验证码" />
     </el-form-item>
     <!-- 密 码 -->
-    <el-form-item
-      v-if="registerType === RegisterType.PASSWORD"
-      type="password" show-password label="" prop="password" class="animated"
-    >
-      <el-input
-        v-model.trim="formUser.password"
-        :prefix-icon="ElIconLock"
-        :size="size"
-        placeholder="请输入密码（6-20位）"
-        show-password
-        type="password" autocomplete="off"
-      />
+    <el-form-item v-if="registerType === RegisterType.PASSWORD" type="password" show-password label="" prop="password" class="animated">
+      <el-input v-model.trim="formUser.password" :prefix-icon="ElIconLock" :size="size" placeholder="请输入密码（6-20位）" show-password type="password" autocomplete="off" />
     </el-form-item>
     <!-- 确认密码 -->
-    <el-form-item
-      v-if="registerType === RegisterType.PASSWORD"
-      type="password" show-password label="" prop="secondPassword" class="animated"
-    >
-      <el-input
-        v-model.trim="formUser.secondPassword"
-        :prefix-icon="ElIconLock"
-        :size="size"
-        placeholder="再一次输入密码" show-password
-        autocomplete="off"
-        type="password"
-      />
+    <el-form-item v-if="registerType === RegisterType.PASSWORD" type="password" show-password label="" prop="secondPassword" class="animated">
+      <el-input v-model.trim="formUser.secondPassword" :prefix-icon="ElIconLock" :size="size" placeholder="再一次输入密码" show-password autocomplete="off" type="password" />
     </el-form-item>
-    <el-form-item style="margin: 0;">
-      <BtnElButton type="info" class="submit w-full tracking-0.2em shadow" style="padding: 1.1em;font-size: 1rem;" @click="onRegister(formRef)">
+    <el-form-item style="margin: 0">
+      <BtnElButton type="info" class="submit w-full tracking-0.2em shadow" style="padding: 1.1em; font-size: 1rem" @click="onRegister(formRef)">
         立即注册
       </BtnElButton>
     </el-form-item>
     <div mt-3 flex items-center text-right text-0.8em sm:text-sm>
-      <el-checkbox v-model="isAgreeTerm" style="--el-color-primary: var(--el-color-info);padding: 0;font-size: inherit;opacity: 0.8;float: left; height: fit-content;">
+      <el-checkbox v-model="isAgreeTerm" style="--el-color-primary: var(--el-color-info); padding: 0; font-size: inherit; opacity: 0.8; float: left; height: fit-content">
         同意并遵守
         <span text-color-info>《用户协议》</span>
       </el-checkbox>
-      <span ml-a cursor-pointer transition-300 btn-info @click="toLoginForm">
-        返回登录
-      </span>
+      <span ml-a cursor-pointer transition-300 btn-info @click="toLoginForm"> 返回登录 </span>
     </div>
-    <DialogPopup
-      v-model="agreeDetail.showDetail"
-      :duration="360"
-      :show-close="false"
-      destroy-on-close
-      content-class="z-1200"
-    >
+    <DialogPopup v-model="agreeDetail.showDetail" :duration="360" :show-close="false" destroy-on-close content-class="z-1200">
       <div class="h-100vh w-100vw flex flex-col sm:(card-rounded-df h-500px w-400px border-default shadow-lg) p-4 border-default-2 card-default bg-color">
         <h3 data-tauri-drag-region class="relative mb-4 select-none text-center text-1.2rem">
           用户协议
-          <ElButton text size="small" class="absolute right-0 -top-1" style="width: 2rem;height: 1.4rem;" @click="agreeDetail.showDetail = false">
+          <ElButton text size="small" class="absolute right-0 -top-1" style="width: 2rem; height: 1.4rem" @click="agreeDetail.showDetail = false">
             <i i-carbon:close p-3 btn-danger title="关闭" />
           </ElButton>
         </h3>
         <el-scrollbar class="flex-1 px-2">
           <MdPreview
             language="zh-CN"
-            style="font-size: 0.8rem;"
+            style="font-size: 0.8rem"
             :theme="$colorMode.value === 'dark' ? 'dark' : 'light'"
             :code-foldable="false"
             code-theme="a11y"
@@ -505,10 +449,12 @@ function toLoginForm() {
             :icon="ElIconCheck"
             type="info"
             plain
-            @click.stop="() => {
-              agreeDetail.showDetail = false;
-              agreeDetail.value = true;
-            }"
+            @click.stop="
+              () => {
+                agreeDetail.showDetail = false
+                agreeDetail.value = true
+              }
+            "
           >
             我已阅读并同意
           </BtnElButton>
@@ -520,9 +466,9 @@ function toLoginForm() {
 
 <style scoped lang="scss">
 .markdown {
-  --at-apply: "!bg-transparent card-rounded-df";
+  --at-apply: '!bg-transparent card-rounded-df';
   :deep(.md-editor-preview) {
-    --at-apply: "text-0.76rem p-0";
+    --at-apply: 'text-0.76rem p-0';
   }
 }
 .form {

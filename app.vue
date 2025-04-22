@@ -8,7 +8,7 @@ useHead({
   meta: [
     {
       name: "description",
-      content: "极物聊天 - 开启你的畅聊之旅！",
+      content: "Bune Chat - Start your chat journey!",
     },
   ],
   htmlAttrs: {
@@ -17,7 +17,7 @@ useHead({
 });
 useSeoMeta({
   title: `${appName}✨`,
-  description: "极物聊天 - 开启你的畅聊之旅！",
+  description: "Bune Chat - Start your chat journey!",
   keywords: appKeywords,
 });
 
@@ -26,20 +26,19 @@ const route = useRoute();
 const setting = useSettingStore();
 const isIframe = ref(false);
 onMounted(() => {
-  if (window) // 判断是否在iframe中
+  if (window)
+    // 判断是否在iframe中
     isIframe.value = window?.self !== undefined && window?.self !== window?.top;
-  if (route.path === "/msg" || route.path.startsWith("/extend") || (setting.isDesktop && route.path === "/login")) // 进入消息页面
+  if (route.path === "/msg" || route.path.startsWith("/extend") || (setting.isDesktop && route.path === "/login"))
+    // 进入消息页面
     useDefaultInit();
-  else
-    useInit();
+  else useInit();
 });
 onUnmounted(useUmounted);
 </script>
 
 <template>
-  <main
-    class="h-100dvh flex-row-c-c"
-  >
+  <main class="h-100dvh flex-row-c-c">
     <div
       class="h-full w-full overflow-hidden bg-color"
       :class="{
@@ -48,9 +47,7 @@ onUnmounted(useUmounted);
       }"
     >
       <NuxtLayout>
-        <NuxtPage
-          class="h-full w-full"
-        />
+        <NuxtPage class="h-full w-full" />
       </NuxtLayout>
     </div>
   </main>

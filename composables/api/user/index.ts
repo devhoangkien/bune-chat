@@ -1,21 +1,31 @@
 import type { Result } from "@/types/result";
-
+import { StatusCode } from "@/types/result";
 /**
  * 账号密码登录
  * @param username 用户名/手机号/邮箱
  * @param password 密码
  * @returns promise
  */
-export function toLoginByPwd(username: string, password: string, isAdmin: boolean = false) {
-  // 管理员
-  if (isAdmin) {
-    return useHttp.post<Result<string>>("/admin/login/pwd", {
-      username,
-      password,
-    });
-  }
-  // 用户
-  return useHttp.post<Result<string>>("/user/login/pwd", { username, password });
+export async function toLoginByPwd(username: string, password: string, isAdmin: boolean = false): Promise<Result<{ accessToken: string; refreshToken: string; userId: string }>> {
+  const query = gql`
+    mutation login($input: LoginUserInput!) {
+      login(input: $input) {
+        accessToken
+        refreshToken
+        userId
+      }
+    }
+  `;
+
+  const variables = { input: { email: username, password } };
+  const { mutate } = useMutation(query, { variables });
+  const result = await mutate();
+  return {
+    success: true,
+    code: StatusCode.SUCCESS,
+    message: "Login successful",
+    data: result?.data,
+  };
 }
 /**
  * 邮箱登录
@@ -35,7 +45,6 @@ export function toLoginByEmail(email: string, code: string) {
 export function toLoginByPhone(phone: string, code: string): Promise<Result<string>> {
   return useHttp.post<Result<string>>("/user/login/phone", { phone, code });
 }
-
 
 /**
  * 登录-获取验证码
@@ -58,7 +67,6 @@ export function getRegisterCode(key: string, type: DeviceType): Promise<Result<s
   return useHttp.get<Result<string>>(`/user/register/code/${key}`, { type });
 }
 
-
 /**
  * 注册
  * @param dto
@@ -66,7 +74,6 @@ export function getRegisterCode(key: string, type: DeviceType): Promise<Result<s
 export function toRegister(dto: RegisterUser): Promise<Result<string>> {
   return useHttp.post<Result<string>>("/user/register", dto);
 }
-
 
 /**
  * 注册（免密码）
@@ -91,13 +98,16 @@ export interface RegisterUser {
  * @returns Resutl
  */
 export function toLogout(token: string): Promise<Result<string>> {
-  return useHttp.deleted("/user/exit", {}, {
-    headers: {
-      Authorization: token,
+  return useHttp.deleted(
+    "/user/exit",
+    {},
+    {
+      headers: {
+        Authorization: token,
+      },
     },
-  });
+  );
 }
-
 
 /**
  * 退出登录（全部设备）
@@ -105,11 +115,13 @@ export function toLogout(token: string): Promise<Result<string>> {
  * @returns Resutl
  */
 export function toLogoutAll(token: string): Promise<Result<string>> {
-  return useHttp.deleted("/user/exit/all", {}, {
-    headers: {
-      Authorization: token,
+  return useHttp.deleted(
+    "/user/exit/all",
+    {},
+    {
+      headers: {
+        Authorization: token,
+      },
     },
-  });
+  );
 }
-
-

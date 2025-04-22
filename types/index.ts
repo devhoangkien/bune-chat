@@ -1,6 +1,7 @@
 export interface ImportMetaEnv {
   readonly VITE_NODE_ENV: string
   VITE_API_BASE_URL: string
+  VITE_GQL_HOST: string
 }
 // 分页
 export interface IPage<T> {
@@ -47,7 +48,6 @@ export const userTypeTextMap: Record<UserType | "undefined", string> = {
 
 // ids
 export type ids = string[];
-
 
 /**
  * 返回数据

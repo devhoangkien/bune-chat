@@ -1,6 +1,7 @@
 // http请求
 export const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export const BaseUrl = import.meta.env.VITE_API_BASE_URL;
+export const BaseUrlGQL = import.meta.env.VITE_GQL_HOST;
 // picture
 export const BASE_OSS_PATH = import.meta.env.VITE_BASE_OSS_PATH;
 export const BaseUrlAppFile = BASE_OSS_PATH;
