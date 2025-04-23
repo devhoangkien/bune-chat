@@ -31,6 +31,8 @@ export enum MittEventType {
   FRIEND_CONTROLLER = "chat-delete-friend", // 好友控制
   // 群聊
   GROUP_CONTRONLLER = "chat-group-controller", // 群聊控制
+  // 消息队列事件
+  MESSAGE_QUEUE = "chat-message-queue", // 消息队列事件
 
 }
 
@@ -73,6 +75,18 @@ export interface AskAiRobotPayload {
   payload?: string // userId
 }
 
+// 消息队列事件载荷
+export interface MessageQueueData {
+  queueItem?: MessageQueueItem;
+  msg?: ChatMessageVO;
+}
+
+export type MessageQueueType = "add" | "process" | "success" | "error" | "retry" | "clear";
+export interface MessageQueuePayload {
+  type: MessageQueueType,
+  payload?: MessageQueueData
+}
+
 // eslint-disable-next-line ts/consistent-type-definitions
 type EventPayloadMap = {
   // 全局快捷键
@@ -103,6 +117,8 @@ type EventPayloadMap = {
   [MittEventType.FRIEND_CONTROLLER]: { type: "delete" | "add", payload: { userId: string } };
   // 群聊
   [MittEventType.GROUP_CONTRONLLER]: { type: "delete" | "add", payload: { roomId: number } };
+  // 消息队列
+  [MittEventType.MESSAGE_QUEUE]: MessageQueuePayload;
 };
 
 export type MittEvents = {

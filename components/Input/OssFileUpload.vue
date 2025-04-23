@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { OssFile } from "@/composables/api/res";
+import type { InputHTMLAttributes } from "vue";
 import { deleteOssFile, getOssErrorCode, getResToken, OssFileType, uploadOssFileSe } from "@/composables/api/res";
 import { StatusCode } from "@/types/result";
 import * as qiniu from "qiniu-js";
@@ -12,6 +13,7 @@ const {
   preClass = "",
   errorClass = "",
   inputClass = "",
+  inputProps = {},
   multiple = false,
   showEdit = true,
   showDelete = true,
@@ -43,6 +45,7 @@ interface Props {
   disable?: boolean
   isAnimate?: boolean
   uploadQuality?: number
+  inputProps?: InputHTMLAttributes
   /**
    * 文件类型
    * @default 'image/*'
@@ -366,15 +369,6 @@ const preImageClass = computed(() => {
   return arr;
 });
 
-defineExpose({
-  inputRef,
-  fileList,
-  pathList,
-  onUpload,
-  removeItem,
-  resetInput,
-});
-
 // 初始化文件列表
 watch(() => modelValue, (val) => {
   if (val)
@@ -391,18 +385,34 @@ const getPreImage = computed(() => {
 const [autoAnimateRef, enable] = useAutoAnimate({
 });
 
-// 单文件时
-// :on-exceed="handleExceed"
-// const handleExceed: UploadProps["onExceed"] = (files) => {
-//   if (!multiple || limit === 1) {
-//     // inputRef.value!.clearFiles();
-//     const file = files[0] as UploadRawFile;
-//     // inputRef.value!.handleStart(file);
-//   }
-// };
+const tempInputProps = ref({});
+
 onMounted(() => {
   const setting = useSettingStore();
   enable(isAnimate && !setting.settingPage.isCloseAllTransition);
+});
+onBeforeUnmount(() => {
+  tempInputProps.value = {};
+});
+
+defineExpose({
+  inputRef,
+  fileList,
+  pathList,
+  onUpload,
+  removeItem,
+  resetInput,
+
+  // 打开选择器
+  openSelector: (props?: Partial<InputHTMLAttributes>) => {
+    tempInputProps.value = props || {};
+    nextTick(() => {
+      inputRef.value?.click?.();
+      setTimeout(() => {
+        tempInputProps.value = {};
+      }, 100);
+    });
+  },
 });
 </script>
 
@@ -424,6 +434,10 @@ onMounted(() => {
         :required="required"
         :disabled="disable"
         :draggable="draggable"
+        v-bind="{
+          ...inputProps,
+          ...tempInputProps,
+        }"
         @change="hangdleChange"
       >
       <ElIconPlus class="h-1/3 w-1/3 absolute-center" />

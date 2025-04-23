@@ -31,7 +31,6 @@ const isReload = computed({
 // 滚动
 const scrollbarRef = useTemplateRef("scrollbarRef");
 const timer = ref<any>(0);
-
 /**
  * 加载数据
  */
@@ -236,9 +235,11 @@ function onScroll(e: { scrollTop: number; scrollLeft: number; }) {
   // 滚动到底部
   if (chat.theRoomId && e.scrollTop >= (scrollbarRef?.value?.wrapRef?.scrollHeight || 0) + offset.value) {
     chat.shouldAutoScroll = chat.theContact?.msgList?.[(chat.theContact.msgList?.length || 0) - 1]?.message?.type === MessageType.AI_CHAT_REPLY; // ai消息是否为会话最后一条
+    chat.isScrollBottom = true;
     debounceReadList(chat.theRoomId);
   }
   else {
+    chat.isScrollBottom = false;
     chat.shouldAutoScroll = false;
   }
 }
@@ -259,6 +260,12 @@ onMounted(() => {
         break;
     }
   });
+
+  mitter.on(MittEventType.MESSAGE_QUEUE, (payload: MessageQueuePayload) => {
+    if (payload.type === "success" || payload.type === "error") {
+      // 消息发送成功或失败
+    }
+  });
 });
 
 onBeforeUnmount(() => {
@@ -266,6 +273,7 @@ onBeforeUnmount(() => {
   timer.value = null;
   // 解绑事件
   mitter.off(MittEventType.MSG_LIST_SCROLL);
+  mitter.off(MittEventType.MESSAGE_QUEUE);
 });
 
 // 暴露

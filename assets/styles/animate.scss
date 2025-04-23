@@ -939,6 +939,17 @@ html.stop-transition-all {
     transform: none;
   }
 }
+@keyframes latter-zoom-top {
+  0% {
+    opacity: 0.6;
+    transform: scale(0.8) translate(10px, 10px);
+    transform-origin: right top;
+  }
+
+  to {
+    transform: none;
+  }
+}
 @keyframes latter-slice-bottom {
   0% {
     opacity: 0;

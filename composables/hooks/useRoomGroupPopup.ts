@@ -267,6 +267,8 @@ export function useRoomGroupPopup(opt: { editFormField: Ref<string> }) {
   });
 
   watch(() => chat.theContact, (val) => {
+    if (!val)
+      return;
     const data = JSON.parse(JSON.stringify(val)) as ChatContactDetailVO;
     if (data.roomGroup && !data.roomGroup?.detail)
       data.roomGroup.detail = {};

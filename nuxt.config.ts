@@ -12,7 +12,8 @@ const GQL_HOST = import.meta.env.VITE_GQL_HOST;
 const isSSR = process.env.NUXT_PUBLIC_SPA;
 const mode = process.env.NUXT_PUBLIC_NODE_ENV as "development" | "production" | "test";
 const version = packageJson?.version;
-// Printing the environment variables for debugging
+const host = process.env.TAURI_DEV_HOST;
+// 打印
 console.log(`mode:${mode} api_url:${BASE_URL} SSR:${isSSR} platform: ${platform}`);
 export default defineNuxtConfig({
   ssr: false,
@@ -139,8 +140,8 @@ export default defineNuxtConfig({
   },
   // pwa
   // pwa,
-  devServer: { host: process.env.TAURI_DEV_HOST || "localhost" },
-  // nuxt developer tools
+  devServer: { host: host || "localhost" },
+  // nuxt开发者工具
   devtools: {
     enabled: true,
   },
@@ -162,6 +163,13 @@ export default defineNuxtConfig({
     server: {
       // Tauri needs a certain port
       strictPort: true,
+      hmr: host
+        ? {
+            protocol: "ws",
+            host,
+            port: 1421,
+          }
+        : undefined,
       // hmr: {
       //   host: "192.168.31.14",
       //   port: 3000,
