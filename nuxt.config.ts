@@ -67,8 +67,21 @@ export default defineNuxtConfig({
     "pinia-plugin-persistedstate/nuxt",
     "@nuxt/eslint",
     "@nuxtjs/apollo",
+    "@nuxtjs/i18n",
   ],
 
+  // https://i18n.nuxtjs.org/docs/getting-started/usage
+  i18n: {
+    defaultLocale: "en",
+    locales: [
+      { code: "en", name: "English", file: "en.json" },
+      { code: "zh", name: "简体中文", file: "zh.json" },
+    ],
+    bundle: {
+      // https://github.com/nuxt-modules/i18n/issues/3238#issuecomment-2672492536
+      optimizeTranslationDirective: false,
+    },
+  },
   srcDir: "",
   rootDir: "",
   app: {
