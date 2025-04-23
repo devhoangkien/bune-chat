@@ -130,6 +130,7 @@ export default defineNuxtConfig({
       // Scan top-level modules
       "composables/**",
       "types/**",
+      "common/**",
     ],
   },
 

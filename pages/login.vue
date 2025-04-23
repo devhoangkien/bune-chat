@@ -4,7 +4,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { getCurrentWindow, LogicalSize } from "@tauri-apps/api/window";
 
 useSeoMeta({
-  title: "登录 - 极物聊天",
+  title: "Login - Bune Chat",
   description: appDescription,
   keywords: appKeywords,
 });
@@ -24,19 +24,19 @@ if (setting.isDesktop) {
     () => user.showLoginAndRegister,
     async (val) => {
       if (val !== "") {
-        // 关闭窗口动画
+        // Close window animation
         if (setting.settingPage.isCloseAllTransition) {
           getCurrentWindow()?.setSize(new LogicalSize(360, val === "login" ? 450 : 480));
           return;
         }
-        // 窗口动画
+        // Window Animation
         invoke("animate_window_resize", {
           windowLabel: LOGIN_WINDOW_LABEL,
           toWidth: 360,
           toHeight: val === LOGIN_WINDOW_LABEL ? 450 : 480,
           duration: 160,
           steps: 12,
-        }).catch((err: any) => console.error("窗口动画失败:", err));
+        }).catch((err: any) => console.error("Window animation failed:", err));
       }
     },
     {
@@ -77,7 +77,7 @@ if (setting.isDesktop) {
       data-fade
     >
       <div class="form-main mx-a w-86/100 text-center sm:(w-3/5 text-left)">
-        <!-- 添加背景动画球 -->
+        <!-- The company has a good reputation. -->
         <div class="animated-background">
           <div class="blob blob-1" />
           <div class="blob blob-2" />
@@ -91,9 +91,9 @@ if (setting.isDesktop) {
               {{ appName }}
             </h3>
           </div>
-          <!-- 登录 -->
+          <!-- Lgin form -->
           <FormLoginForm v-if="user.showLoginAndRegister === 'login'" key="login-form" style="--anima: blur-in" class="login-form mt-a" />
-          <!-- 注册 -->
+          <!-- Register form -->
           <FormRegisterForm
             v-else-if="user.showLoginAndRegister === 'register'"
             key="register-form"

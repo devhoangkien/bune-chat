@@ -1,21 +1,28 @@
 import type { Result } from "@/types/result";
-import { StatusCode } from "@/types/result";
+import type { GraphQLResponse, ILoginResponse } from "~/common/interfaces";
+import { GraphQLResult, InternalError } from "~/common/helpers";
 /**
  * 账号密码登录
  * @param username 用户名/手机号/邮箱
  * @param password 密码
  * @returns promise
  */
-export async function toLoginByPwd(username: string, password: string, isAdmin: boolean = false): Promise<Result<{ accessToken: string; refreshToken: string; userId: string }>> {
-  const variables = { input: { email: username, password } };
-  const { mutate } = useMutation(mutationlLogin, { variables });
-  const result = await mutate();
-  return {
-    success: true,
-    code: StatusCode.SUCCESS,
-    message: "Login successful",
-    data: result?.data?.login,
-  };
+export async function toLoginByPwd(
+  username: string,
+  password: string,
+  isAdmin: boolean = false,
+): Promise<GraphQLResponse<ILoginResponse | null>> {
+  try {
+    const variables = { input: { email: username, password } };
+    const { mutate } = useMutation(mutationlLogin, { variables });
+
+    const result = await mutate();
+
+    return GraphQLResult<ILoginResponse>(result);
+  }
+  catch (error) {
+    return new InternalError(error);
+  }
 }
 /**
  * 邮箱登录

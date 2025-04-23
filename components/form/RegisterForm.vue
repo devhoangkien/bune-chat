@@ -315,17 +315,19 @@ async function toLogin(token?: string) {
     });
     return;
   }
-  const data = await toLoginByPwd(formUser.username, formUser.password);
+  const result: GraphQLResponse<ILoginResponse | null> | null = await toLoginByPwd(formUser.username, formUser.password);
   // 自动登录成功
   store.$patch({
-    token: data.data.accessToken,
+    token: result?.data?.login?.accessToken,
     showLoginAndRegister: "",
     isLogin: true,
   });
   ElMessage.success({
     message: "登录成功！",
   });
-  store.onUserLogin(data.data.accessToken);
+  if (result?.data?.login) {
+    store.onUserLogin(result?.data?.login?.accessToken);
+  }
   isLoading.value = false;
 }
 

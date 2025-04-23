@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { DeviceType, getLoginCodeByType, toLoginByEmail, toLoginByPhone, toLoginByPwd } from "~/composables/api/user/auth";
+import { DeviceType, getLoginCodeByType, toLoginByPwd } from "~/composables/api/user/auth";
 import { LoginType } from "~/types/user/index.js";
 
 const { t } = useI18n();
@@ -103,7 +103,7 @@ async function getLoginCode(type: LoginType) {
           message: data.message,
           duration: 5000,
         });
-        // userForm.value.code = data.data;
+        // userForm.value.code = data?.data?;
       }
       else {
         ElMessage.closeAll("error");
@@ -180,29 +180,40 @@ async function onLogin(formEl: any | undefined) {
       return;
     isLoading.value = true;
     user.isOnLogining = true;
-    let res: { code: number; data: any; message: string } = { code: 20001, data: "", message: "登录失败！" };
+    let res: GraphQLResponse<ILoginResponse | null> | null = null;
     try {
+      console.log("loginType", loginType.value);
+      console.log("LoginType.PWD", LoginType.PWD);
       switch (loginType.value) {
         case LoginType.PWD:
           res = await toLoginByPwd(userForm.value.username, userForm.value.password);
+          console.log("000000", res);
+
           break;
-        case LoginType.PHONE:
-          res = await toLoginByPhone(userForm.value.phone, userForm.value.code);
-          break;
-        case LoginType.EMAIL:
-          res = await toLoginByEmail(userForm.value.email, userForm.value.code);
-          break;
-        case LoginType.ADMIN:
-          res = (await toLoginByPwd(userForm.value.username, userForm.value.password, true)) as { code: number; data: any; message: string };
-          break;
+    //     case LoginType.PHONE:
+    //       res = await toLoginByPhone(userForm.value.phone, userForm.value.code);
+    // console.log("23333", res);
+
+    //       break;
+    //     case LoginType.EMAIL:
+    //       res = await toLoginByEmail(userForm.value.email, userForm.value.code);
+    // console.log("11111111111111", res);
+
+    //       break;
+    //     case LoginType.ADMIN:
+    //       res = (await toLoginByPwd(userForm.value.username, userForm.value.password, true)) as { code: number; data: any; message: string };
+    // console.log("222222", res);
+
+    //       break;
       }
     }
     catch (error) {
       done();
     }
-    if (res.code === 20000) {
+
+    if (res && res.data) {
       // 登录成功
-      console.log(res.data);
+      console.log("data", res.data);
       const data = res.data;
       if (data) {
         console.log("1111111111111", res.data);
@@ -220,18 +231,19 @@ async function onLogin(formEl: any | undefined) {
           account: userForm.value.username,
           password: userForm.value.password,
           userInfo: {
-            id: data.userId,
-            avatar: data.avatar,
-            nickname: data.email,
+            id: data.login.userId,
+            avatar: data.login.avatar,
+            nickname: data.login.email,
           },
         });
         // });
         done();
       }
-      // 登录失败
+      // Login Failed
       else {
+        console.log("res", res);
         ElMessage.error({
-          message: res.message,
+          message: res.errors?.[0]?.message || "Unknown error",
           duration: 2000,
         });
         // store
@@ -285,16 +297,16 @@ function querySearchAccount(queryString: string, cb: (data: any[]) => void) {
 </script>
 
 <template>
-  <!-- 登录 -->
+  <!-- Log in -->
   <el-form ref="formRef" :disabled="isLoading" label-position="top" hide-required-asterisk :rules="rules" :model="userForm" style="border: none" class="form" autocomplete="off">
     <template v-if="!user.isLogin">
       <div mb-4 text-sm tracking-0.2em op-80>
         Chat whatever you want, chat as you like ✨
       </div>
-      <!-- 切换登录 -->
+      <!-- Switch Login -->
       <el-segmented v-show="loginType !== LoginType.ADMIN" v-model="loginType" class="toggle-login grid grid-cols-3 mb-4 w-full gap-2 card-bg-color-2" :options="options" />
-      <!-- 验证码登录(客户端 ) -->
-      <!-- 邮箱登录 -->
+      <!-- Verification code login (client) -->
+      <!-- Email Login -->
       <el-form-item v-if="loginType === LoginType.EMAIL" prop="email" class="animated">
         <el-input
           v-model.trim="userForm.email"
@@ -312,7 +324,7 @@ function querySearchAccount(queryString: string, cb: (data: any[]) => void) {
           </template>
         </el-input>
       </el-form-item>
-      <!-- 手机号登录 -->
+      <!-- Login by mobile phone number -->
       <el-form-item v-if="loginType === LoginType.PHONE" type="tel" prop="phone" class="animated">
         <el-input v-model.trim="userForm.phone" :prefix-icon="ElIconIphone" size="large" type="tel" autocomplete="off" placeholder="Phone" @keyup.enter="getLoginCode(loginType)">
           <template #append>
@@ -332,7 +344,7 @@ function querySearchAccount(queryString: string, cb: (data: any[]) => void) {
           @keyup.enter="onLogin(formRef)"
         />
       </el-form-item>
-      <!-- 密码登录 -->
+      <!-- Password login -->
       <el-form-item v-if="loginType === LoginType.PWD || loginType === LoginType.ADMIN" label="" prop="username" class="animated">
         <el-autocomplete
           v-model.trim="userForm.username"
@@ -431,7 +443,7 @@ function querySearchAccount(queryString: string, cb: (data: any[]) => void) {
     padding: 0.3em 1em;
   }
 
-  // 报错信息
+  // Error message
   :deep(.el-form-item) {
     padding: 0.3em 0.1em;
 
