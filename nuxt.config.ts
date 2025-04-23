@@ -3,7 +3,7 @@
 // import { pwa } from "./config/pwa";
 import { appDescription, appName } from "./constants/index";
 import * as packageJson from "./package.json";
-import "dayjs/locale/zh-cn";
+import "dayjs/locale/en";
 
 const platform = process.env.TAURI_PLATFORM;
 const isMobile = !!/android|ios/.exec(platform || "");
@@ -73,9 +73,11 @@ export default defineNuxtConfig({
   // https://i18n.nuxtjs.org/docs/getting-started/usage
   i18n: {
     defaultLocale: "en",
+    strategy: "no_prefix",
     locales: [
       { code: "en", name: "English", file: "en.json" },
       { code: "zh", name: "简体中文", file: "zh.json" },
+      { code: "vi", name: "Tiếng Việt", file: "vi.json" },
     ],
     bundle: {
       // https://github.com/nuxt-modules/i18n/issues/3238#issuecomment-2672492536
@@ -149,7 +151,7 @@ export default defineNuxtConfig({
     icon: "ElIcon",
     importStyle: "scss",
     themes: ["dark"],
-    defaultLocale: "zh-cn",
+    defaultLocale: "en",
   },
   // pwa
   // pwa,

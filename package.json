@@ -1,9 +1,9 @@
 {
-  "name": "jiwu-mall-chat",
+  "name": "bune-chat",
   "version": "1.6.6",
   "private": true,
-  "description": "jiwu-mall-chat",
-  "author": "Kiwi2333",
+  "description": "bune-chat",
+  "author": "devhoangkien",
   "scripts": {
     "prepare": "husky install && nuxi prepare",
     "tauri": "tauri",

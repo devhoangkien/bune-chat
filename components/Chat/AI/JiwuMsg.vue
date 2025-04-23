@@ -15,12 +15,7 @@ const user = useUserStore();
 </script>
 
 <template>
-  <ChatMsgTemplate
-    :prev-msg="prevMsg"
-    :index="index"
-    :data="data"
-    v-bind="$attrs"
-  >
+  <ChatMsgTemplate :prev-msg="prevMsg" :index="index" :data="data" v-bind="$attrs">
     <template #body>
       <!-- 内容 -->
       <template v-if="data.fromUser.userId === user.userInfo.id">
@@ -31,13 +26,13 @@ const user = useUserStore();
       <template v-else>
         <div class="msg-popper relative sm:max-w-40rem text-color">
           <MdPreview
-            language="zh-CN"
+            language="en-US"
             show-code-row-number
             :theme="$colorMode.value === 'dark' ? 'dark' : 'light'"
             code-theme="a11y"
             class="markdown"
             :code-foldable="false"
-            style="font-size: 1em;color: inherit;padding: 0;"
+            style="font-size: 1em; color: inherit; padding: 0"
             :model-value="data.message?.content || ''"
           />
           <slot name="actions" />
@@ -51,7 +46,7 @@ const user = useUserStore();
 @use '../Msg/msg.scss';
 
 .markdown {
-  --at-apply: "text-0.8rem p-0 bg-color";
+  --at-apply: 'text-0.8rem p-0 bg-color';
   // line-height: initial !important;
   font-size: inherit;
 
@@ -90,7 +85,7 @@ const user = useUserStore();
         .md-editor-code-block {
           line-height: 1.6;
 
-          &~span[rn-wrapper]>span {
+          & ~ span[rn-wrapper] > span {
             line-height: 1.6;
           }
         }
@@ -98,7 +93,6 @@ const user = useUserStore();
         code {
           border-radius: 0 0 8px 8px;
         }
-
       }
     }
   }

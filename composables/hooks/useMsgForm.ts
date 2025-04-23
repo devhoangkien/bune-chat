@@ -40,7 +40,7 @@ export function useRecording(options: { timeslice?: number, pressHandleRefName?:
   const speechRecognition = useSpeechRecognition({
     continuous: true,
     interimResults: true,
-    lang: "zh-CN",
+    lang: "en-US",
   });
 
   /**

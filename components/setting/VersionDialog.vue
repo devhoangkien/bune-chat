@@ -5,44 +5,27 @@ import "md-editor-v3/lib/preview.css";
 const setting = useSettingStore();
 
 // 公告
-const {
-  showNotice,
-  notice,
-  currentVersion,
-  showUpateNoticeLine,
-  showVersionNotice,
-  handleCheckUpadate,
-  isNoMore,
-  versionList,
-  loadVersionPage,
-} = useSettingNotice();
+const { showNotice, notice, currentVersion, showUpateNoticeLine, showVersionNotice, handleCheckUpadate, isNoMore, versionList, loadVersionPage } = useSettingNotice();
 </script>
 
 <template>
   <div v-bind="$attrs" class="group h-8 flex-row-bt-c">
     关于更新
     <div class="ml-a flex items-center gap-2 sm:gap-4">
-      <span class="text-0.8rem tracking-0.1em !btn-info" @click="showUpateNoticeLine = true">{{ currentVersion ? `v${currentVersion}` : "" }} 更新日志</span>
+      <span class="text-0.8rem tracking-0.1em !btn-info" @click="showUpateNoticeLine = true">{{ currentVersion ? `v${currentVersion}` : '' }} 更新日志</span>
       <template v-if="setting.isDesktop">
-        <el-badge
-          v-if="!setting.appUploader.isUpdating"
-          :offset="[-5, 5]" :hidden="!setting.appUploader.isUpload"
-          is-dot
-          :value="+setting.appUploader.isUpload"
-        >
+        <el-badge v-if="!setting.appUploader.isUpdating" :offset="[-5, 5]" :hidden="!setting.appUploader.isUpload" is-dot :value="+setting.appUploader.isUpload">
           <ElButton
             v-if="setting.isDesktop"
             class="flex-row-c-c cursor-pointer transition-all"
-            round plain
-            style="height: 2em;padding: 0 0.8em;"
+
+            plain round
+            style="height: 2em; padding: 0 0.8em"
             :type="setting.appUploader.isUpdating ? 'warning' : 'info'"
             @click="!setting.appUploader.isCheckUpdatateLoad && setting.checkUpdates(true)"
           >
             <span flex-row-c-c>
-              <i
-                i-solar:refresh-outline mr-1 inline-block p-2
-                :class="setting.appUploader.isCheckUpdatateLoad ? 'animate-spin' : ''"
-              />
+              <i i-solar:refresh-outline mr-1 inline-block p-2 :class="setting.appUploader.isCheckUpdatateLoad ? 'animate-spin' : ''" />
               检查更新
             </span>
           </ElButton>
@@ -56,19 +39,13 @@ const {
           text-inside
           class="progress-bar w-13rem"
         >
-          {{ setting.appUploader.downloadedText || "- / - MB" }}
+          {{ setting.appUploader.downloadedText || '- / - MB' }}
         </el-progress>
       </template>
     </div>
   </div>
   <!-- 版本公告 -->
-  <DialogPopup
-    v-model="showNotice"
-    destroy-on-close
-    :duration="300"
-    :z-index="1100"
-    width="fit-content"
-  >
+  <DialogPopup v-model="showNotice" destroy-on-close :duration="300" :z-index="1100" width="fit-content">
     <template #title>
       <h4 mb-4 text-center text-1.2rem>
         &emsp;版本公告 🔔
@@ -76,7 +53,7 @@ const {
     </template>
     <div class="max-h-60vh min-h-30vh w-86vw overflow-y-auto sm:w-500px">
       <MdPreview
-        language="zh-CN"
+        language="en-US"
         editor-id="notice-toast"
         show-code-row-number
         :no-img-zoom-in="setting.isMobileSize"
@@ -95,12 +72,7 @@ const {
     </div>
   </DialogPopup>
   <!-- 版本的时间线 -->
-  <DialogPopup
-    v-model="showUpateNoticeLine"
-    destroy-on-close
-    :duration="300"
-    :z-index="1099"
-  >
+  <DialogPopup v-model="showUpateNoticeLine" destroy-on-close :duration="300" :z-index="1099">
     <template #title>
       <h4 mb-6 text-center text-1.2rem>
         更新日志
@@ -108,19 +80,9 @@ const {
       </h4>
     </template>
     <el-scrollbar wrap-class="w-86vw pr-2 pl-1 sm:pr-4 animate-[blur-in_.6s] overflow-y-auto max-h-40vh min-h-30vh sm:max-h-60vh md:w-420px sm:w-380px">
-      <el-timeline style="max-width: 100%;">
-        <ListAutoIncre
-          :immediate="true"
-          :auto-stop="true"
-          :no-more="isNoMore"
-          @load="loadVersionPage"
-        >
-          <el-timeline-item
-            v-for="(item, i) in versionList"
-            :key="item.notice"
-            :color="i === 0 ? 'var(--el-color-primary)' : ''"
-            class="group"
-          >
+      <el-timeline style="max-width: 100%">
+        <ListAutoIncre :immediate="true" :auto-stop="true" :no-more="isNoMore" @load="loadVersionPage">
+          <el-timeline-item v-for="(item, i) in versionList" :key="item.notice" :color="i === 0 ? 'var(--el-color-primary)' : ''" class="group">
             <div class="flex items-center text-xl font-bold">
               v{{ item.version }}
               <el-tag v-if="item.version === currentVersion" type="primary" effect="dark" size="small" class="ml-2 text-xs text-dark">
@@ -140,7 +102,7 @@ const {
               @click="showVersionNotice(item.version)"
             >
               <MdPreview
-                language="zh-CN"
+                language="en-US"
                 editor-id="notice-toast"
                 show-code-row-number
                 :theme="$colorMode.value === 'dark' ? 'dark' : 'light'"
@@ -148,16 +110,12 @@ const {
                 code-theme="a11y"
                 no-img-zoom-in
                 preview-theme="smart-blue"
-                style="font-size: 12px;background-color: transparent;"
+                style="font-size: 12px; background-color: transparent"
                 class="mt-2 card-rounded-df px-4 op-60 shadow-sm shadow-inset transition-opacity hover:op-100 !border-default-hover"
                 :model-value="item.notice.substring(0, 200)"
               />
-              <div
-                class="linear-bt absolute bottom-0 left-0 w-full pt-6 text-center hover:text-color-info text-mini"
-              >
-                <span op-0 transition-opacity group-hover:op-100>
-                  查看更多
-                </span>
+              <div class="linear-bt absolute bottom-0 left-0 w-full pt-6 text-center hover:text-color-info text-mini">
+                <span op-0 transition-opacity group-hover:op-100> 查看更多 </span>
               </div>
             </div>
             <div v-else class="text-small">
@@ -166,7 +124,7 @@ const {
           </el-timeline-item>
           <template #done>
             <div class="py-1rem text-center text-mini">
-              {{ versionList.length ? "没有更多了" : "快去认识其他人" }}
+              {{ versionList.length ? '没有更多了' : '快去认识其他人' }}
             </div>
           </template>
         </ListAutoIncre>
@@ -197,15 +155,15 @@ const {
   }
 }
 :deep(.notice-toast-preview-wrapper) {
-  .task-list-item-checkbox[type="checkbox"] {
+  .task-list-item-checkbox[type='checkbox'] {
     display: none !important;
   }
 }
 
-:deep(.el-timeline-item){
+:deep(.el-timeline-item) {
   .el-timeline-item__tail {
     left: 5px;
-    top:0.3em;
+    top: 0.3em;
   }
   .el-timeline-item__node--normal {
     left: 0;
@@ -220,4 +178,3 @@ const {
   background: linear-gradient(to bottom, rgba(15, 15, 15, 0) 0%, rgba(15, 15, 15, 0.8) 50%, rgba(15, 15, 15, 1) 100%);
 }
 </style>
-

@@ -435,7 +435,7 @@ function toLoginForm() {
         </h3>
         <el-scrollbar class="flex-1 px-2">
           <MdPreview
-            language="zh-CN"
+            language="en-US"
             style="font-size: 0.8rem"
             :theme="$colorMode.value === 'dark' ? 'dark' : 'light'"
             :code-foldable="false"

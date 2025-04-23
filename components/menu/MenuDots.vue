@@ -55,8 +55,8 @@ const menuList = reactive([
     onClick: reloadPage,
   },
   {
-    label: "切换主题",
-    icon: computed(() => colorMode.value === "dark" ? "/images/icon/moon.svg" : "/images/icon/sun.svg"),
+    label: "Switch Theme",
+    icon: computed(() => (colorMode.value === "dark" ? "/images/icon/moon.svg" : "/images/icon/sun.svg")),
     customIconClass: "filter-grayscale-100",
     attrs: {
       id: DEFAULT_THEME_TOGGLE_ID,
@@ -76,19 +76,10 @@ const menuList = reactive([
 </script>
 
 <template>
-  <MenuPopper
-    placement="bottom-end"
-    :menu-list="menuList"
-    trigger="click"
-  >
+  <MenuPopper placement="bottom-end" :menu-list="menuList" trigger="click">
     <template #reference>
       <slot name="btn">
-        <BtnElButton
-          text
-          size="small"
-          title="菜单"
-          v-bind="$attrs"
-        >
+        <BtnElButton text size="small" title="菜单" v-bind="$attrs">
           <i class="i-solar:add-circle-outline hover:i-solar:add-circle-bold" />
         </BtnElButton>
       </slot>
@@ -96,5 +87,4 @@ const menuList = reactive([
   </MenuPopper>
 </template>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

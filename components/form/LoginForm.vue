@@ -2,6 +2,7 @@
 import { DeviceType, getLoginCodeByType, toLoginByEmail, toLoginByPhone, toLoginByPwd } from "~/composables/api/user/auth";
 import { LoginType } from "~/types/user/index.js";
 
+const { t } = useI18n();
 const user = useUserStore();
 const loginType = useLocalStorage<LoginType>("loginType", LoginType.EMAIL);
 const { historyAccounts, addHistoryAccount, removeHistoryAccount } = useHistoryAccount();
@@ -247,11 +248,11 @@ async function onLogin(formEl: any | undefined) {
   });
 }
 
-const options = [
-  { label: "Email", value: LoginType.EMAIL },
-  { label: "Phone", value: LoginType.PHONE },
-  { label: "Password", value: LoginType.PWD },
-];
+const options = computed(() => [
+  { label: t("email"), value: LoginType.EMAIL },
+  { label: t("phone"), value: LoginType.PHONE },
+  { label: t("password"), value: LoginType.PWD },
+]);
 
 const theHistoryAccount = ref({
   type: LoginType.EMAIL,
@@ -313,15 +314,7 @@ function querySearchAccount(queryString: string, cb: (data: any[]) => void) {
       </el-form-item>
       <!-- 手机号登录 -->
       <el-form-item v-if="loginType === LoginType.PHONE" type="tel" prop="phone" class="animated">
-        <el-input
-          v-model.trim="userForm.phone"
-          :prefix-icon="ElIconIphone"
-          size="large"
-          type="tel"
-          autocomplete="off"
-          placeholder="Phone"
-          @keyup.enter="getLoginCode(loginType)"
-        >
+        <el-input v-model.trim="userForm.phone" :prefix-icon="ElIconIphone" size="large" type="tel" autocomplete="off" placeholder="Phone" @keyup.enter="getLoginCode(loginType)">
           <template #append>
             <el-button type="primary" :disabled="phoneCodeStorage > 0 || isLoading" @click="getLoginCode(loginType)">
               {{ phoneCodeStorage > 0 ? `Resend after ${phoneCodeStorage}s` : 'Send code' }}
@@ -330,7 +323,14 @@ function querySearchAccount(queryString: string, cb: (data: any[]) => void) {
         </el-input>
       </el-form-item>
       <el-form-item v-if="loginType === LoginType.EMAIL || loginType === LoginType.PHONE" prop="code" class="animated">
-        <el-input v-model.trim="userForm.code" :prefix-icon="ElIconChatDotSquare" autocomplete="off" size="large" placeholder="Please enter the verification code" @keyup.enter="onLogin(formRef)" />
+        <el-input
+          v-model.trim="userForm.code"
+          :prefix-icon="ElIconChatDotSquare"
+          autocomplete="off"
+          size="large"
+          placeholder="Please enter the verification code"
+          @keyup.enter="onLogin(formRef)"
+        />
       </el-form-item>
       <!-- 密码登录 -->
       <el-form-item v-if="loginType === LoginType.PWD || loginType === LoginType.ADMIN" label="" prop="username" class="animated">
@@ -378,13 +378,7 @@ function querySearchAccount(queryString: string, cb: (data: any[]) => void) {
         />
       </el-form-item>
       <el-form-item style="margin: 0">
-        <el-button
-          type="primary"
-          class="submit w-full tracking-0.2em shadow"
-          style="padding: 20px"
-          @keyup.enter="onLogin(formRef)"
-          @click="onLogin(formRef)"
-        >
+        <el-button type="primary" class="submit w-full tracking-0.2em shadow" style="padding: 20px" @keyup.enter="onLogin(formRef)" @click="onLogin(formRef)">
           <!-- :loading="user.isOnLogining" -->
           Log in
         </el-button>
@@ -414,15 +408,7 @@ function querySearchAccount(queryString: string, cb: (data: any[]) => void) {
           <small op-80 el-color-info>（{{ user.userInfo.username ? 'Already logged in' : 'Please log in' }}）</small>
         </div>
         <div>
-          <BtnElButton
-            style="width: 8em"
-            type="primary"
-            transition-icon
-            icon-class="i-solar-alt-arrow-left-bold"
-            mr-2
-            sm:mr-4
-            @click="navigateTo('/')"
-          >
+          <BtnElButton style="width: 8em" type="primary" transition-icon icon-class="i-solar-alt-arrow-left-bold" mr-2 sm:mr-4 @click="navigateTo('/')">
             {{ user.isOnLogining ? 'Logging in...' : 'Go to chat' }}
           </BtnElButton>
           <BtnElButton style="width: 8em" type="danger" transition-icon plain icon-class="i-solar:logout-3-broken" @click="user.exitLogin">
@@ -431,6 +417,7 @@ function querySearchAccount(queryString: string, cb: (data: any[]) => void) {
         </div>
       </div>
     </template>
+    {{ t('welcome') }}
   </el-form>
 </template>
 

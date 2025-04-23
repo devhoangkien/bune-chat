@@ -10,7 +10,7 @@ export const pwa: ModuleOptions = {
   scope,
   base: scope,
   includeAssets: ["logo.png"],
-  // https://developer.mozilla.org/zh-CN/docs/Web/Manifest#lang
+  // https://developer.mozilla.org/en-US/docs/Web/Manifest#lang
   manifest: {
     id: scope,
     background_color: "#fff",

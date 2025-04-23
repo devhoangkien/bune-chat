@@ -5,14 +5,9 @@
   "identifier": "com.jiwuchat.app",
   "app": {
     "withGlobalTauri": true,
-    "windows": [
-    ],
+    "windows": [],
     "security": {
-      "capabilities": [
-        "default-capability",
-        "desktop-capability",
-        "mobile-capability"
-      ]
+      "capabilities": ["default-capability", "desktop-capability", "mobile-capability"]
     }
   },
   "build": {
@@ -34,16 +29,14 @@
     "longDescription": "",
     "licenseFile": "./LICENSE/LICENSE.txt",
     "createUpdaterArtifacts": "v1Compatible",
-    "resources": [
-      "./res/**/*"
-    ],
+    "resources": ["./res/**/*"],
     "shortDescription": "",
     "windows": {
       "nsis": {
         "installerIcon": "./icons/icon.ico"
       },
       "wix": {
-        "language": "zh-CN"
+        "language": "en-US"
       }
     },
     "android": {
@@ -67,7 +60,7 @@
       },
       "deb": {
         "files": {
-          "/usr/share/README.md": "../README.md", 
+          "/usr/share/README.md": "../README.md",
           "/usr/share/public": "../public/"
         }
       }
