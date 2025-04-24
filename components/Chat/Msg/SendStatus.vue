@@ -17,7 +17,7 @@ const titleMap: Record<MessageSendStatus, { title: string, className?: string }>
   },
   [MessageSendStatus.SENDING]: {
     title: "发送中...",
-    className: "i-ri:loader-5-line  animate-spin h-5 w-5 op-70",
+    className: "i-tabler:loader-2 animate-spin op-40",
   },
   [MessageSendStatus.SUCCESS]: {
     title: "",

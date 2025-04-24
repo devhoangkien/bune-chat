@@ -239,8 +239,9 @@ export const useChatStore = defineStore(
     const isMemberLoading = computed({
       get: () => !!currentRoomCache?.value?.isLoading,
       set: (val) => {
-        if (theRoomId.value && roomMapCache.value?.[theRoomId.value])
+        if (theRoomId.value && roomMapCache.value?.[theRoomId.value]) {
           roomMapCache.value[theRoomId.value]!.isLoading = val;
+        }
       },
     });
     const isMemberReload = computed({
