@@ -82,14 +82,14 @@ const menuList = computed<MenuItem[]>(() => ([
     path: "/user/safe",
     icon: "i-solar:devices-outline",
     activeIcon: "i-solar:devices-bold p-2.8",
-    class: "absolute bg-color-br bottom-15 diabled-bg",
+    class: "absolute bottom-15 diabled-bg",
   },
   {
     title: "设置",
     path: "/setting",
     icon: "i-solar:settings-linear hover:animate-spin block",
     activeIcon: "i-solar:settings-bold p-2.8 hover:animate-spin block",
-    class: "absolute bg-color-br bottom-2 diabled-bg",
+    class: "absolute bottom-2 diabled-bg",
     tipValue: +setting.appUploader.isUpload,
     isDot: true,
   },
@@ -110,7 +110,7 @@ export interface MenuItem {
 
 <template>
   <div
-    class="relative z-998 h-full flex flex-col border-default-r card-bg-color"
+    class="relative z-998 h-full flex flex-col border-default-r bg-color-2"
   >
     <!-- 顶部 -->
     <div class="nav-padding-top-8 mx-a h-20 w-fit flex-row-c-c flex-shrink-0 border-default-b">

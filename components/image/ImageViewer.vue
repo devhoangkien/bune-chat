@@ -348,7 +348,7 @@ function destroy() {
 // 监听键盘事件
 onMounted(() => {
   document.addEventListener("keydown", handleKeydown);
-  console.log("mounted");
+  console.log("mounted ImageViewer");
 });
 
 onBeforeUnmount(() => {

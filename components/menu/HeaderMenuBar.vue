@@ -61,9 +61,7 @@ const getAppTitle = computed(() => {
         <NuxtLink to="/" class="hidden flex-row-c-c sm:flex">
           <img src="/logo.png" class="h-3 w-3" alt="logo">
         </NuxtLink>
-        <h4 hidden sm:block>
-          {{ getAppTitle }}
-        </h4>
+        <strong hidden sm:block>{{ appName }}</strong>
         <div
           class="btn-primary"
           :class="!chat.isOpenContact ? 'flex-row-c-c animate-zoom-in animate-duration-200 sm:hidden' : 'hidden '" @click="toggleContactOpen"
@@ -76,7 +74,7 @@ const getAppTitle = computed(() => {
     <div class="absolute left-0 top-0 z-0 h-full w-full flex-row-c-c" :data-tauri-drag-region="setting.isDesktop">
       <slot name="drag-content" />
     </div>
-    <slot name="center" />
+    <slot name="center" :app-title="getAppTitle" />
     <!-- 会话搜索框 -->
     <slot name="search-contact">
       <i

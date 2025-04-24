@@ -207,7 +207,7 @@ if (setting.isDesktop) {
 .blob-1 {
   width: 22rem;
   height: 22rem;
-  background: radial-gradient(circle, rgba(74, 144, 226, 0.4) 0%, rgba(74, 144, 226, 0.2) 70%);
+  background: radial-gradient(circle, rgba(74, 144, 226, 0.3) 0%, rgba(74, 144, 226, 0.1) 70%);
   left: -50%;
   top: -50%;
   animation: float-blob-1 12s ease-in-out infinite;
@@ -216,7 +216,7 @@ if (setting.isDesktop) {
 .blob-2 {
   width: 18rem;
   height: 18rem;
-  background: radial-gradient(circle, rgba(107, 74, 226, 0.4) 0%, rgba(107, 74, 226, 0.2) 70%);
+  background: radial-gradient(circle, rgba(107, 74, 226, 0.3) 0%, rgba(107, 74, 226, 0.1) 70%);
   right: -40%;
   top: 20%;
   animation: float-blob-2 18s ease-in-out infinite;
@@ -225,7 +225,7 @@ if (setting.isDesktop) {
 .blob-3 {
   width: 16rem;
   height: 16rem;
-  background: radial-gradient(circle, rgba(103, 178, 240, 0.4) 0%, rgba(103, 178, 240, 0.2) 70%);
+  background: radial-gradient(circle, rgba(103, 178, 240, 0.3) 0%, rgba(103, 178, 240, 0.1) 70%);
   left: -40%;
   bottom: -20%;
   animation: float-blob-3 20s ease-in-out infinite;
