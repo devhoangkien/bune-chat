@@ -113,7 +113,7 @@ export interface MenuItem {
     class="relative z-998 h-full flex flex-col border-default-r card-bg-color"
   >
     <!-- 顶部 -->
-    <div class="mx-a h-4rem w-fit flex-row-c-c flex-shrink-0 border-default-b">
+    <div class="nav-padding-top-8 mx-a h-20 w-fit flex-row-c-c flex-shrink-0 border-default-b">
       <UserInfoPopper
         :data="user.userInfo"
         :is-edit="true"

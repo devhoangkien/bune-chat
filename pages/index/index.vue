@@ -41,7 +41,7 @@ const openRoomDrawer = computed({
       <el-drawer
         v-if="setting.isMobileSize"
         v-model="openRoomDrawer" size="76%" style="box-shadow: none;max-width: 300px;"
-        modal-class="backdrop-blur-4px transition-[backdrop-filter] border-default overflow-hidden"
+        modal-class="backdrop-blur-4px transition-[backdrop-filter] border-default overflow-hidden "
         lock-scroll
         :with-header="false"
       >
@@ -50,7 +50,7 @@ const openRoomDrawer = computed({
       <template v-else>
         <ChatRoomGroupPopup
           key="chat-room-group-popup"
-          class="ml-a h-full w-1/4 w-260px flex flex-col gap-2 border-r-0 rounded-r-0 p-4 border-default-l bg-color"
+          class="nav-padding-top-8 ml-a h-full w-1/4 w-260px flex flex-col gap-2 border-r-0 rounded-r-0 p-4 border-default-l bg-color"
         />
       </template>
     </template>

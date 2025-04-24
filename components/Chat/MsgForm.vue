@@ -632,7 +632,7 @@ defineExpose({
         <div
           v-if="isDragDropOver"
           key="drag-over"
-          data-tauri-drag-region
+          :data-tauri-drag-region="setting.isDesktop"
           class="fixed left-0 top-0 z-3000 h-full w-full flex select-none items-center justify-center card-rounded-df backdrop-blur border-default"
         >
           <div class="flex-row-c-c flex-col border-(1px [--el-border-color] dashed) rounded-4 p-6 transition-all hover:(border-1px border-[--el-color-primary] border-solid) card-default-br sm:p-12 text-small !hover:text-color">
@@ -944,8 +944,8 @@ defineExpose({
 
 <style lang="scss" scoped>
 .form-tools {
-    --at-apply: "relative sm:h-62 flex flex-col justify-between overflow-x-hidden p-2 border-default-2-t";
-    box-shadow: rgba(0, 0, 0, 0.02) 0px -6px 12px;
+    --at-apply: "card-bg-color sm:bg-transparent relative sm:h-62 flex flex-col justify-between overflow-x-hidden p-2 border-default-t";
+    box-shadow: rgba(0, 0, 0, 0.02) 0px -2px 16px;
     .tip {
     --at-apply: "op-0";
   }

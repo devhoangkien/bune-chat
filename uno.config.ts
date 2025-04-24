@@ -59,6 +59,7 @@ export default defineConfig({
     ["border-default-dashed", "hover:shadow-sm border-2px  border-default border-dashed"],
     ["border-default-sm", "border-1px border-solid border-gray-200 dark:border-dark-500"],
     ["border-default-hover", "transition-200 border-1px border-solid border-[rgba(22,_22,_22,_0.1)]  dark:border-[rgba(73,_73,_73,_0.2)] hover:(border-gray-200 dark:border-dark-100)"],
+    ["border-default-2-hover", "transition-200 border-1px border-solid border-[rgba(20,_20,_20,_0.05)]  dark:border-[rgba(76,_76,_76,_0.1)] hover:(border-gray-200 dark:border-dark-100)"],
     ["border-default-dashed", "border-2px  border-default border-dashed"],
     ["border-default-dashed-hover", "transition-200 hover:border-solid hover:border-[var(--el-color-primary)]  border-default-dashed"],
     // 布局

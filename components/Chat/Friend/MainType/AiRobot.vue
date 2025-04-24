@@ -26,7 +26,7 @@ onActivated(() => {
       class="w-full flex-1"
       :data-fades="isAnim"
     >
-      <h3 mb-8 mt-2 text-center text-1.2em tracking-0.1em sm:mb-8>
+      <h3 mb-8 mt-2 hidden text-center text-1.2em tracking-0.1em sm:mb-8 sm:block>
         AI点亮日常，智趣触手可及
       </h3>
       <ChatFriendRobotList />

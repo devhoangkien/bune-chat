@@ -88,7 +88,7 @@ onUnmounted(() => {
   <el-scrollbar
     ref="scrollbarRef"
     v-loading.fullscreen="isFullLoading"
-    class="setting-page h-full w-full flex-1 pt-8 bg-color-3 sm:card-bg-color-2"
+    class="setting-page h-full w-full flex-1 pt-10 bg-color-3 sm:card-bg-color-2"
     wrap-class="h-full w-full pb-4 sm:pb-20 flex flex-1 flex-col px-4"
     element-loading-text="更新中..."
     element-loading-background="transparent"

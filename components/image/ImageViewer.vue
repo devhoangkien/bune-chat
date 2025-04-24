@@ -406,13 +406,13 @@ defineExpose({
       >
         <!-- 关闭按钮 -->
         <div
-          class="flex-center pointer-events-auto absolute right-5 top-5 cursor-pointer rounded-full p-2 text-6 btn-primary bg-color-br text-color"
+          class="btn-bg flex-center pointer-events-auto absolute right-5 top-5 cursor-pointer rounded-full p-2 text-6 btn-primary"
           @click="close"
         >
           <i class="i-carbon:close p-3" />
         </div>
         <!-- 工具栏 -->
-        <div class="pointer-events-auto absolute bottom-10 left-1/2 flex transform gap-4 rounded-2 p-2.5 p-x-3.75 -translate-x-1/2 bg-color-br">
+        <div class="pointer-events-auto absolute bottom-10 left-1/2 flex transform gap-4 rounded-2 p-2.5 p-x-3.75 -translate-x-1/2 card-default-br">
           <el-icon-d-arrow-left
             v-if="showPrev"
             class="btn"
@@ -467,14 +467,14 @@ defineExpose({
         <!-- 左右切换箭头 -->
         <div
           v-if="showPrev"
-          class="flex-center pointer-events-auto fixed left-5 top-1/2 h-12.5 w-12.5 transform cursor-pointer rounded-full text-7.5 -translate-y-1/2 bg-color-br text-color"
+          class="flex-center btn-bg pointer-events-auto fixed left-5 top-1/2 cursor-pointer rounded-2 py-2 text-6 -translate-y-1/2"
           @click.stop="prev"
         >
           <i class="i-carbon:chevron-left" />
         </div>
         <div
           v-if="showNext"
-          class="flex-center pointer-events-auto fixed right-5 top-1/2 h-12.5 w-12.5 transform cursor-pointer rounded-full text-7.5 -translate-y-1/2 bg-color-br text-color"
+          class="flex-center btn-bg pointer-events-auto fixed right-5 top-1/2 cursor-pointer rounded-2 py-2 text-6 -translate-y-1/2"
           @click.stop="next"
         >
           <i class="i-carbon:chevron-right" />
@@ -482,14 +482,14 @@ defineExpose({
         <!-- 图片计数 -->
         <div
           v-if="state.urlList.length > 1"
-          class="pointer-events-auto fixed left-5 top-5 rounded-1 px-2.5 py-1.25 text-3.5 bg-color text-color"
+          class="btn-bg pointer-events-auto fixed left-5 top-5 rounded-1 px-2.5 py-1.25 text-3.5"
         >
           {{ state.index + 1 }} / {{ state.urlList.length }}
         </div>
         <!-- 快捷键提示卡片 -->
         <div
           v-if="showShortcutTips"
-          class="pointer-events-auto absolute left-2 top-2 w-12rem select-none card-rounded-df text-sm shadow-md transition-200 sm:(left-4 top-4) bg-color-br"
+          class="btn-bg pointer-events-auto absolute left-2 top-2 w-12rem select-none card-rounded-df text-sm shadow-md transition-200 sm:(left-4 top-4)"
           :class="[isShortcutCardCollapsed ? 'transform -translate-x-full !left-0' : '']"
         >
           <div class="mb-2 flex-row-bt-c px-3 py-2 border-default-2-b">
@@ -530,8 +530,11 @@ defineExpose({
 </template>
 
 <style lang="scss">
+.btn-bg {
+  --at-apply: "bg-dark bg-opacity-15 backdrop-blur-2 text-light border-default-2-hover";
+}
 .btn {
-  --at-apply: "w-1.4rem h-1.4rem! btn-primary dark:btn-info";
+  --at-apply: "w-1.4em h-1.4em btn-primary dark:btn-info";
 }
 
 .flex-center {

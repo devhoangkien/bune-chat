@@ -21,6 +21,7 @@ async function clearHistory() {
   chat.showTheFriendPanel = false;
   clear?.();
 }
+const isEmptyPanel = computed(() => chat.theFriendOpt.type !== FriendOptType.Empty);
 </script>
 
 <template>
@@ -29,31 +30,30 @@ async function clearHistory() {
       class="w-full transition-all sm:(relative mx-auto w-320px border-default-r p-0)"
     >
       <!-- 好友列表 -->
-      <ChatFriendTabs class="relative mx-a h-full flex-shrink-0 p-4 pb-0" />
+      <ChatFriendTabs class="nav-padding-top-8 relative mx-a h-full flex-shrink-0 p-4 pb-0" />
     </div>
     <div
-      class="z-1 h-full flex-1 flex-shrink-0 flex-col card-bg-color-2"
+      class="bg z-1 h-full flex-1 flex-shrink-0 flex-col bg-color-3 sm:card-bg-color-2"
       :class="chat.showTheFriendPanel ? 'flex absolute sm:(p-0 relative) left-0 w-full' : 'hidden sm:flex'"
     >
-      <div
-        v-if="chat.theFriendOpt.type !== FriendOptType.Empty"
-        class="i-solar:alt-arrow-left-line-duotone absolute right-16 top-5 z-1000 hidden p-2.6 sm:block btn-danger"
-        title="关闭"
-        @click="undo()"
-      />
-      <div
-        v-if="chat.theFriendOpt.type !== FriendOptType.Empty"
-        class="i-carbon:close absolute right-4 top-5 z-1000 block scale-110 p-2.6 btn-danger"
-        title="关闭"
-        @click="clearHistory"
-      />
-      <!-- 面板 -->
-      <ChatFriendMainType
-        v-if="chat.theFriendOpt.type !== FriendOptType.Empty"
-        key="chat-friend-main-type"
-        :data="chat.theFriendOpt"
-        class="bg relative z-999 mx-a h-full w-full flex-1 flex-shrink-0"
-      />
+      <template v-if="isEmptyPanel">
+        <div
+          class="i-solar:alt-arrow-left-line-duotone absolute right-18 top-5 z-1000 hidden p-2.6 sm:right-14 sm:top-12 sm:block btn-danger"
+          title="关闭"
+          @click="undo()"
+        />
+        <div
+          class="i-carbon:close absolute right-6 top-5 z-1000 block scale-110 p-2.6 sm:right-3 sm:top-12 btn-danger"
+          title="关闭"
+          @click="clearHistory"
+        />
+        <!-- 面板 -->
+        <ChatFriendMainType
+          key="chat-friend-main-type"
+          :data="chat.theFriendOpt"
+          class="nav-padding-top-8 relative z-999 mx-a h-full w-full flex-1 flex-shrink-0 sm:!bg-transparent"
+        />
+      </template>
       <div
         v-else
         key="chat-friend-empty"

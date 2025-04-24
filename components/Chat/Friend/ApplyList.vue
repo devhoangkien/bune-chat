@@ -91,12 +91,11 @@ function onArgeeFriend(applyId: number) {
         class="item"
       >
         <CardElImage
-          class="avatar-icon cursor-pointer"
+          class="avatar-icon flex-shrink-0 cursor-pointer"
           :src="BaseUrlImg + p.user?.avatar" fit="cover" @click="chat.setTheFriendOpt(FriendOptType.User, {
             id: p.userId,
           })"
         />
-
         <div class="flex flex-col truncate">
           <p truncate text-sm>
             {{ p.user?.nickName || "未填写" }}

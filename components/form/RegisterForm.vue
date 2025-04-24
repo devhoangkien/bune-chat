@@ -429,7 +429,7 @@ function toLoginForm() {
     </div>
     <DialogPopup v-model="agreeDetail.showDetail" :duration="360" :show-close="false" destroy-on-close content-class="z-1200">
       <div class="h-100vh w-100vw flex flex-col sm:(card-rounded-df h-500px w-400px border-default shadow-lg) p-4 border-default-2 card-default bg-color">
-        <h3 data-tauri-drag-region class="relative mb-4 select-none text-center text-1.2rem">
+        <h3 :data-tauri-drag-region="setting.isDesktop" class="relative mb-4 select-none text-center text-1.2rem">
           用户协议
           <ElButton text size="small" class="absolute right-0 -top-1" style="width: 2rem; height: 1.4rem" @click="agreeDetail.showDetail = false">
             <i i-carbon:close p-3 btn-danger title="关闭" />

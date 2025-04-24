@@ -371,7 +371,7 @@ defineExpose({
               @click="isScreenSharing ? stopScreenShare() : startScreenShare()"
             />
           </el-tooltip>
-          <div v-if="isMaxWind" class="h-12 w-3/4 flex-1 absolute-center-x" data-tauri-drag-region />
+          <div v-if="isMaxWind" class="h-12 w-3/4 flex-1 absolute-center-x" :data-tauri-drag-region="setting.isDesktop" />
           <span max-w-full truncate absolute-center-x>
             {{ rtcDescText }}
           </span>

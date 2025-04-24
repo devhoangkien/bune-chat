@@ -56,7 +56,7 @@ if (setting.isDesktop) {
       'show-register': user.showLoginAndRegister === 'register',
     }"
   >
-    <div data-tauri-drag-region absolute right-0 z-1000 w-100vw flex cursor-move items-center gap-2 sm:w-50vw>
+    <div :data-tauri-drag-region="setting.isDesktop" class="absolute right-0 z-1000 w-100vw flex cursor-move items-center gap-2 sm:w-50vw">
       <div class="group ml-a flex flex items-center gap-2 p-2 sm:p-4">
         <DropdownLanguage title="Switch Language" />
         <BtnTheme :class="setting.isDesktop ? 'scale-90 op-50 group-hover:op-100' : ' h-2rem w-2rem rounded-1/2 card-default border-default'" title="Switch Theme" />

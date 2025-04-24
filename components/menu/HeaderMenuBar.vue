@@ -1,6 +1,12 @@
 <script lang="ts" setup>
 import { appName } from "@/constants/index";
 
+const {
+  navClass = "z-999 h-3.5rem sm:h-3rem relative left-0 top-0 flex-row-bt-c select-none gap-4 rounded-b-0 px-3 border-default-b bg-color sm:(pl-4 pr-2 border-default-b)",
+} = defineProps<{
+  navClass?: string
+}>();
+
 const setting = useSettingStore();
 const chat = useChatStore();
 // @unocss-include
@@ -40,13 +46,20 @@ const getAppTitle = computed(() => {
 
 <template>
   <menu
-    class="group nav"
+    class="group"
+    :class="navClass"
   >
     <!-- 菜单栏 -->
     <slot name="left">
-      <div class="left relative z-1000 flex-row-c-c gap-3 tracking-0.2em">
+      <div
+        class="relative z-1000 mr-a btn-primary"
+        :class="!chat.isOpenContact ? 'flex-row-c-c animate-zoom-in animate-duration-200 sm:hidden' : 'hidden '" @click="toggleContactOpen"
+      >
+        <i i-solar-alt-arrow-left-line-duotone p-3 />
+      </div>
+      <!-- <div class="left relative z-1000 flex-row-c-c gap-3 tracking-0.2em">
         <NuxtLink to="/" class="hidden flex-row-c-c sm:flex">
-          <img src="/logo.png" class="h-2rem w-2rem" alt="logo">
+          <img src="/logo.png" class="h-3 w-3" alt="logo">
         </NuxtLink>
         <h4 hidden sm:block>
           {{ getAppTitle }}
@@ -57,10 +70,10 @@ const getAppTitle = computed(() => {
         >
           <i i-solar-alt-arrow-left-line-duotone p-3 />
         </div>
-      </div>
+      </div> -->
     </slot>
     <!-- 拖拽区域 -->
-    <div class="absolute left-0 top-0 z-0 h-full w-full flex-row-c-c" data-tauri-drag-region>
+    <div class="absolute left-0 top-0 z-0 h-full w-full flex-row-c-c" :data-tauri-drag-region="setting.isDesktop">
       <slot name="drag-content" />
     </div>
     <slot name="center" />
@@ -97,7 +110,7 @@ const getAppTitle = computed(() => {
           <!-- 菜单按钮 -->
           <template v-if="!['android', 'web', 'ios'].includes(setting.appPlatform)">
             <div class="mx-1 h-1.2em sm:mx-2 border-default-l" />
-            <MenuController>
+            <MenuController size="small">
               <template #start="{ data }">
                 <ElButton
                   text
@@ -121,13 +134,6 @@ const getAppTitle = computed(() => {
 </template>
 
 <style lang="scss" scoped>
-.nav {
-  --at-apply: "h-3.5rem sm:h-3.125rem relative left-0 top-0 flex-row-bt-c select-none gap-4 rounded-b-0 px-3  border-default-b  bg-color";
-  z-index: 999;
-  background-size: 3px 3px;
-  backdrop-filter: blur(1rem);
-}
-
 .dark .nav {
   backdrop-filter: blur(1rem);
   background-size: 3px 3px;

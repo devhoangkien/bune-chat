@@ -21,7 +21,7 @@ watch(activeName, () => {
 </script>
 
 <template>
-  <main class="w-full flex flex-1 flex-col p-4 pt-12 card-bg-color-2 sm:p-6">
+  <main class="w-full flex flex-1 flex-col p-4 pt-12 card-bg-color-2 sm:(p-6 pt-10)">
     <h3 flex items-center>
       账户与安全
       <i i-solar:devices-bold-duotone ml-2 inline-block p0.6em opacity-60 />
