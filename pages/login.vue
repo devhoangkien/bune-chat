@@ -56,7 +56,7 @@ if (setting.isDesktop) {
       'show-register': user.showLoginAndRegister === 'register',
     }"
   >
-    <div data-tauri-drag-region absolute right-0 z-1000 w-100vw flex cursor-move items-center gap-2 sm:w-50vw>
+    <div :data-tauri-drag-region="setting.isDesktop" class="absolute right-0 z-1000 w-100vw flex cursor-move items-center gap-2 sm:w-50vw">
       <div class="group ml-a flex flex items-center gap-2 p-2 sm:p-4">
         <DropdownLanguage title="Switch Language" />
         <BtnTheme :class="setting.isDesktop ? 'scale-90 op-50 group-hover:op-100' : ' h-2rem w-2rem rounded-1/2 card-default border-default'" title="Switch Theme" />
@@ -207,7 +207,7 @@ if (setting.isDesktop) {
 .blob-1 {
   width: 22rem;
   height: 22rem;
-  background: radial-gradient(circle, rgba(74, 144, 226, 0.4) 0%, rgba(74, 144, 226, 0.2) 70%);
+  background: radial-gradient(circle, rgba(74, 144, 226, 0.3) 0%, rgba(74, 144, 226, 0.1) 70%);
   left: -50%;
   top: -50%;
   animation: float-blob-1 12s ease-in-out infinite;
@@ -216,7 +216,7 @@ if (setting.isDesktop) {
 .blob-2 {
   width: 18rem;
   height: 18rem;
-  background: radial-gradient(circle, rgba(107, 74, 226, 0.4) 0%, rgba(107, 74, 226, 0.2) 70%);
+  background: radial-gradient(circle, rgba(107, 74, 226, 0.3) 0%, rgba(107, 74, 226, 0.1) 70%);
   right: -40%;
   top: 20%;
   animation: float-blob-2 18s ease-in-out infinite;
@@ -225,7 +225,7 @@ if (setting.isDesktop) {
 .blob-3 {
   width: 16rem;
   height: 16rem;
-  background: radial-gradient(circle, rgba(103, 178, 240, 0.4) 0%, rgba(103, 178, 240, 0.2) 70%);
+  background: radial-gradient(circle, rgba(103, 178, 240, 0.3) 0%, rgba(103, 178, 240, 0.1) 70%);
   left: -40%;
   bottom: -20%;
   animation: float-blob-3 20s ease-in-out infinite;

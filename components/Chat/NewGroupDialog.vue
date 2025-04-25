@@ -199,7 +199,7 @@ defineExpose({
     content-class="max-w-95vw sm:w-fit shadow-lg border-default-2  rounded-2 dialog-bg-color"
   >
     <template v-if="setting.isMobileSize" #title>
-      <div data-tauri-drag-region select-none p-4 pb-0 text-center text-sm>
+      <div :data-tauri-drag-region="setting.isDesktop" select-none p-4 pb-0 text-center text-sm>
         <i :class="form.roomId ? 'i-solar:users-group-rounded-bold' : 'i-solar:users-group-rounded-line-duotone'" class="mr-2 p-2.6 text-small" />
         {{ form.roomId ? '邀请成员' : '新建群聊' }}
       </div>

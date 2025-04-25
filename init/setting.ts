@@ -47,8 +47,8 @@ function checkAndExecuteShortcutKey(e: KeyboardEvent) {
   const shorcutKey = `${ctrlKey ? "ctrl+" : ""}${shiftKey ? "shift+" : ""}${altKey ? "alt+" : ""}${metaKey ? "meta+" : ""}${key}`;
   const shorcutAction = shorcutKeyMap[shorcutKey];
   if (shorcutAction) {
-    shorcutAction.action();
     e.preventDefault();
+    shorcutAction.action();
     return true;
   }
   return false;

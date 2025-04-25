@@ -259,7 +259,7 @@ const menuList = [
   >
     <!-- 搜索群聊 -->
     <div
-      class="header"
+      class="nav-padding-top-8 header"
       :class="setting.isMobileSize && !setting.isOpenContactSearch ? '!h-0 overflow-y-hidden' : ''"
     >
       <ElInput
@@ -417,7 +417,7 @@ const menuList = [
   }
 }
 .header {
-  --at-apply: "sm:(h-16 px-4) h-14 px-3 flex-row-c-c flex-shrink-0 transition-200 transition-height  card-bg-color";
+  --at-apply: "sm:(h-20 px-4) h-14 px-3 flex-row-c-c flex-shrink-0 transition-200 transition-height  card-bg-color";
   :deep(.el-input) {
     .el-input__wrapper {
       --at-apply: "!shadow-none !outline-none !input-bg-color";

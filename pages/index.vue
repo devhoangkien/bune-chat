@@ -49,9 +49,10 @@ watch(() => user.isLogin, (val) => {
       class="h-full flex flex-1 flex-col overflow-hidden"
     >
       <MenuHeaderMenuBar class="flex-shrink-0 bg-color">
-        <template #center>
+        <template #center="{ appTitle }">
+          <!-- 移动端菜单 -->
           <div v-if="setting.isMobile" class="block tracking-0.1em absolute-center-center sm:hidden" data-tauri-drag-region>
-            {{ appName }}
+            {{ appTitle || appName }}
           </div>
           <BtnWsStatusBtns v-if="showWsStatusBtns" class="offline" />
         </template>

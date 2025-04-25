@@ -5,11 +5,6 @@
 defineProps<{
   data: TheFriendOpt
 }>();
-
-const isAnim = ref<boolean>(true);
-onActivated(() => {
-  isAnim.value = false;
-});
 </script>
 
 <template>
@@ -21,7 +16,7 @@ onActivated(() => {
       </strong>
     </div>
     <el-scrollbar view-class="p-2rem md:w-2/3 mx-a" wrap-class="w-full flex-1 h-full">
-      <ChatFriendApplyList :data-fade="isAnim" />
+      <ChatFriendApplyList />
     </el-scrollbar>
   </div>
 </template>

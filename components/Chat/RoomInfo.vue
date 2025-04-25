@@ -46,8 +46,8 @@ function onClickMore() {
 </script>
 
 <template>
-  <div class="h-16 flex-row-bt-c rounded-0 pl-2 pr-4 sm:(h-16 pl-4)">
-    <div w-full flex items-center gap-3>
+  <div :data-tauri-drag-region="setting.isDesktop" class="nav-padding-top-8 h-16 flex-row-bt-c rounded-0 pl-2 pr-4 sm:(h-20 pl-4)">
+    <div :data-tauri-drag-region="setting.isDesktop" w-full flex items-center gap-3>
       <CardElImage
         loading="lazy"
         :preview-src-list="[BaseUrlImg + chat?.theContact?.avatar]"

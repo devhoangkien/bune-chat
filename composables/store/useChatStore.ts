@@ -240,18 +240,15 @@ export const useChatStore = defineStore(
       get: () => !!currentRoomCache?.value?.isLoading,
       set: (val) => {
         if (theRoomId.value && roomMapCache.value?.[theRoomId.value]) {
-          // @ts-expect-error
-          roomMapCache.value[theRoomId.value].isLoading = val;
+          roomMapCache.value[theRoomId.value]!.isLoading = val;
         }
       },
     });
     const isMemberReload = computed({
       get: () => !!currentRoomCache?.value?.isReload,
       set: (val) => {
-        if (theRoomId.value && roomMapCache.value?.[theRoomId.value]) {
-          // @ts-expect-error
-          roomMapCache.value[theRoomId.value].isReload = val;
-        }
+        if (theRoomId.value && roomMapCache.value?.[theRoomId.value])
+          roomMapCache.value[theRoomId.value]!.isReload = val;
       },
     });
     const memberPageInfo = computed({ // 缓存当前房间的分页信息
@@ -270,8 +267,7 @@ export const useChatStore = defineStore(
           };
           return;
         }
-        // @ts-expect-error
-        roomMapCache.value[theRoomId.value].pageInfo = newPageInfo;
+        roomMapCache.value[theRoomId.value]!.pageInfo = newPageInfo;
       },
     });
     const roomGroupPageInfo = ref({
@@ -407,7 +403,7 @@ export const useChatStore = defineStore(
       if (lastSaveTime && (Date.now() - lastSaveTime < CONTACT_CACHE_TIME)) {
         return;
       }
-      const res = await getChatContactInfo(vo.roomId, user.getToken, vo.type)?.catch(() => {});
+      const res = await getChatContactInfo(vo.roomId, user.getToken, vo.type)?.catch(() => { });
       if (res && res.code === StatusCode.SUCCESS) {
         contactMap.value[vo.roomId] = {
           ...(res?.data || {}),

@@ -55,7 +55,9 @@
   ),
   // $drawer
   $drawer: ("padding-primary": 0px),
-  //
+  $popover: ("border-radius": 8px),
+  $popper: ("border-radius": 8px),
+  // 轮播图
   $carousel:
     (
       "arrow-font-size": 20px,
@@ -72,7 +74,7 @@
   $card:
     (
       "border-color": getCssVar("border-color", "light"),
-      "border-radius": 4px,
+      "border-radius": 6px,
       "padding": 2px,
       "bg-color": getCssVar("fill-color", "blank")
     ),

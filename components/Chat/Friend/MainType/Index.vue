@@ -20,6 +20,8 @@ interface FriendOptTypeMap {
 </script>
 
 <template>
-  <component :is="maps[data.type || FriendOptType.User]" :data="data" v-bind="$attrs" />
+  <component :is="maps[data.type || FriendOptType.User]" :data="data" v-bind="$attrs">
+    <slot name="control" />
+  </component>
 </template>
 
