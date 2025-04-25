@@ -80,14 +80,14 @@
     "@unocss/eslint-plugin": "66.0.0",
     "@unocss/nuxt": "66.0.0",
     "@vueuse/nuxt": "13.1.0",
-    "eslint": "9.25.0",
+    "eslint": "9.25.1",
     "eslint-plugin-format": "1.0.1",
     "husky": "9.1.7",
     "lint-staged": "15.5.1",
     "nuxt": "3.16.2",
     "sass": "1.83.4",
     "typescript": "5.8.3",
-    "vue-tsc": "2.2.8"
+    "vue-tsc": "2.2.10"
   },
   "husky": {
     "hooks": {

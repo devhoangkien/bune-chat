@@ -42,10 +42,6 @@ const getRoleText = computed(() => room.value.role !== undefined ? chatRoomRoleT
 
 <template>
   <div
-    v-loading="isLoading"
-    element-loading-text="加载中..."
-    element-loading-background="transparent"
-    :element-loading-spinner="defaultLoadingIcon"
     v-bind="$attrs"
     class="h-full w-full flex flex-1 flex-col gap-6 px-10 transition-300 sm:px-1/4 !pt-14vh sm:!pt-20vh"
   >

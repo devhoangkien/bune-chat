@@ -48,11 +48,17 @@ const isEmptyPanel = computed(() => chat.theFriendOpt.type !== FriendOptType.Emp
           @click="clearHistory"
         />
         <!-- 面板 -->
-        <ChatFriendMainType
-          key="chat-friend-main-type"
-          :data="chat.theFriendOpt"
-          class="nav-padding-top-8 relative z-999 mx-a h-full w-full flex-1 flex-shrink-0 sm:!bg-transparent"
-        />
+        <Transition
+          name="page-fade"
+          mode="out-in"
+          appear
+        >
+          <ChatFriendMainType
+            key="chat-friend-main-type"
+            :data="chat.theFriendOpt"
+            class="nav-padding-top-8 relative z-999 mx-a h-full w-full flex-1 flex-shrink-0 sm:!bg-transparent"
+          />
+        </Transition>
       </template>
       <div
         v-else

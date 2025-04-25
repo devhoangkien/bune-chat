@@ -47,12 +47,11 @@ const openRoomDrawer = computed({
       >
         <ChatRoomGroupPopup class="ml-a h-full w-full flex flex-col gap-2 border-r-0 rounded-l-2 rounded-r-0 p-4 border-default-l bg-color" />
       </el-drawer>
-      <template v-else>
-        <ChatRoomGroupPopup
-          key="chat-room-group-popup"
-          class="nav-padding-top-8 ml-a h-full w-1/4 w-260px flex flex-col gap-2 border-r-0 rounded-r-0 p-4 border-default-l bg-color"
-        />
-      </template>
+      <ChatRoomGroupPopup
+        v-else
+        key="chat-room-group-popup"
+        class="nav-padding-top-12 ml-a h-full w-1/4 w-260px flex flex-col gap-2 border-r-0 rounded-r-0 p-4 bg-color"
+      />
     </template>
   </div>
 </template>

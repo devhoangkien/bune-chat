@@ -99,7 +99,7 @@ function reload(roomId?: number) {
   chat.theContact.msgList?.splice?.(0);
   isReload.value = true;
   isLoading.value = true;
-  getChatMessagePage(roomId, 20, null, user.getToken).then(async ({ data }) => {
+  getChatMessagePage(roomId, 20, null, user.getToken).then(({ data }) => {
     if (roomId !== chat.theRoomId)
       return;
     // 追加数据
@@ -108,16 +108,17 @@ function reload(roomId?: number) {
     chat.theContact.msgList = data.list;
     pageInfo.value.isLast = data.isLast;
     pageInfo.value.cursor = data.cursor || undefined;
-    await nextTick();
+    isLoading.value = false;
+    nextTick(() => chat.scrollBottom(false));
+    setTimeout(() => {
+      isReload.value = false;
+      chat.scrollBottom(false);
+      chat.saveScrollTop && chat.saveScrollTop();
+    }, 100);
+  }).catch(() => {
     isLoading.value = false;
     isReload.value = false;
-    chat.scrollBottom(false);
-    chat.saveScrollTop && chat.saveScrollTop();
-  }).catch(async () => {
-    await nextTick();
-    isLoading.value = false;
-    isReload.value = false;
-    chat.scrollBottom(false);
+    nextTick(() => chat.scrollBottom(false));
   })
   ;
 }
