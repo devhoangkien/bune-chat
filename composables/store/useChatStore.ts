@@ -1,6 +1,6 @@
 import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
 import { acceptHMRUpdate, defineStore } from "pinia";
-import { useMessageQueue } from "../hooks/useMessageQueue";
+import { useMessageQueue } from "../hooks/msg/useMessageQueue";
 
 const CONTACT_CACHE_TIME = 5 * 60 * 1000; // 5分钟
 
