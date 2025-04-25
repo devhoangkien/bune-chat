@@ -6,8 +6,7 @@
 
 <div>
       <a href="https://github.com/Kiwi233333/jiwu-mall-chat-tauri" target="_blank">
-        <img class="disabled-img-view"
-        alt="GitHub" src="https://img.shields.io/badge/Github-Project-blueviolet.svg?style=plasticr">
+        <img class="disabled-img-view" src="https://img.shields.io/badge/Github-Project-blueviolet.svg?style=plasticr" alt="Project" >
       </a>
       <a href="https://github.com/Kiwi233333/jiwu-mall-chat-tauri/stargazers" target="_blank">
         <img class="disabled-img-view" alt="License"
@@ -31,194 +30,210 @@
       <a href="https://app.netlify.com/sites/jiwuchat/deploys" target="_blank">
           <img src="https://api.netlify.com/api/v1/badges/b68ad9ac-53e5-4c5a-ac56-a8882ffe7697/deploy-status" alt="+QQ Group"/>
       </a>
+      <a href="https://qm.qq.com/q/iSaETNVdKw" target="_blank">
+        <img src="https://img.shields.io/badge/QQ Group:939204073 -blue?logo=tencentqq&logoColor=white" alt="QQ Group"/>
+      </a>
+    </div>
+    <div>
+      <a href="https://www.deepseek.com/" target="_blank" style="margin: 2px;">
+        <img alt="DeepSeek AI" src="https://github.com/deepseek-ai/DeepSeek-V2/blob/main/figures/badge.svg?raw=true" />
+      </a>
     </div>
 
-Home Page: [JiwuChat](https://jiwuchat.kiwi233.top/)
+Official Website: [JiwuChat](https://jiwuchat.kiwi233.top/)
 <br>
-Language : [简体中文](./README.en.md) | English
+Language : [简体中文](./README.md) | English
 
 </div>
 
 ## Introduction
 
-JiwuChat is a lightweight `(~10MB)` multi-platform chat application built with Tauri2 and Nuxt3. It features real-time messaging, AI group chat bots (`iFlytek Spark`, `KimiAI`, etc.), `WebRTC audio/video calls`, screen sharing, and AI shopping capabilities. It supports seamless cross-device communication, covering text, images, files, and voice messages, as well as group chats and customizable settings. It offers light/dark modes to enhance efficient social networking. ✨
+JiwuChat is a lightweight `(~10MB)` multi-platform chat application built with Tauri2 and Nuxt3. It supports various real-time messaging features, AI group chat bots (integrated with `iFlytek Spark`, `KimiAI`, etc.), `WebRTC audio/video calls`, screen sharing, and AI-powered shopping. It enables seamless cross-device communication, supporting text, images, files, and voice messages, along with group chats and customizable settings. Light/dark mode is available for efficient social networking. ✨
 
 ## One Codebase, Multiple Platforms
 
-![Multi-platform Adaptation](.doc/previews.png)
+![Multi-platform Support](.doc/previews.png)
 
 ## Default Account
 
-- Username: ikun233
-- Password: 123456
-- Experience: [Web Version](https://chat.jiwu.kiwi233.top/)
+- Username: ikun233  
+- Password: 123456  
+- Demo: [Web Version](https://chat.jiwu.kiwi233.top/)  
 
-> ⚠ Note: This account does not have permissions to upload files, modify personal information, change passwords, etc. It is only for testing purposes.
+> ⚠ Note: ~~This test account has limited permissions (e.g., no file uploads, profile edits, or password changes).~~  
 
-## Feature List
+> 👀 Thanks for your support! The project is still under development, and the backend is not yet open-source. Feel free to share your feedback via email or QQ.  
 
-| Module | Description | Status |
-| --- | --- | --- |
-| User Module | Supports login and registration via username, phone number, and email | ✔ |
-| Message Module | Supports real-time chat with text, images, files, voice, @mentions, message recall, and deletion | ✔ |
-| Conversation Module | Supports group chats, private chats, and roles like group owner, admin, and regular user | ✔ |
-| Contacts Module | Supports viewing, adding, and deleting contacts | ✔ |
-| System Version Module | Supports automatic app updates, version announcements, etc. | ✔ |
-| Account & Security Module | Provides account login, password change, account management, device security, and online/offline status | ✔ |
-| AI Module | Supports multiple AI chat bots in group chats, such as `DeepSeek`, `iFlytek Spark` and `KimiAI` | ✔ |
-| Smart Customer Service Module | AI shopping chat functionality, providing product recommendations from `JiwuMall` | ✔ |
-| File Download Management Module | Supports local file download, opening, and deletion | ✔ |
-| Audio/Video Module | WebRTC-based screen sharing, voice, and video chat | ✔ |
-| Other Features | Global dark mode, fonts, custom download paths, multi-system support, and customizable settings | ✔ |
+## Feature List  
 
-## Project Screenshots
+| Module         | Description                                                                 | Status |
+|----------------|-----------------------------------------------------------------------------|--------|
+| User Module    | Supports login/registration via account, phone, or email; profile management | ✔      |
+| Messaging      | Supports text, images, files, voice, @mentions, recall, delete, and AI replies | ✔      |
+| Chat Sessions  | Group chats, private chats, pinning, roles (owner, admin, etc.)              | ✔      |
+| Contacts       | View, add, and delete contacts                                              | ✔      |
+| System Updates | Auto-updates, version announcements                                         | ✔      |
+| Account Security| Login, password change, device security, online status management           | ✔      |
+| AI Module      | Supports multiple AI chatbots (e.g., `DeepSeek`, `iFlytek Spark`, `KimiAI`) | ✔      |
+| Smart Shopping | AI-powered product recommendations via `Jiwu Circle`                       | ✔      |
+| File Management| Download, open, and delete files locally                                   | ✔      |
+| Audio/Video    | `WebRTC`-based screen sharing, voice, and video calls                       | ✔      |
+| Others         | AI translation, dark/light mode, fonts, custom download paths, multi-OS support | ✔      |
 
-- Chat Desktop App Login / Register
+## Screenshots  
 
-![Login](./.doc/login.png)
+- Desktop App: Login / Register  
 
-![Register](./.doc/register.png)
+![Login](./.doc/login.png)  
 
-- Light / Dark Themes
+![Register](./.doc/register.png)  
 
-![Light Theme](./.doc/chat1.png)
+- Light / Dark Themes  
 
-![Homepage](./.doc/chat.png)
+![Light](./.doc/chat1.png)  
 
-- AI Chatbot (DeepSeek, iFlytek Spark, Kimi AI) 🤩
+![Home](./.doc/chat.png)  
 
-![AI Chatbot](./.doc/group-ai-ds.png)
+- AI Chatbots (DeepSeek, iFlytek Spark, Kimi AI) 🤩  
 
-![AI Chatbot](./.doc/group-ai-2.png)
+![AI Chatbot](./.doc/group-ai-ds.png)  
 
-![AI Chatbot](./.doc/group-ai-1.png)
+![AI Chatbot](./.doc/group-ai-2.png)  
 
-- Audio/Video Chat (WebRTC)
+![AI Chatbot](./.doc/group-ai-1.png)  
 
-![Audio/Video Chat](./.doc/rtc1.png)
+- Audio/Video Calls (WebRTC)  
 
-- Screen Sharing
+![Audio/Video](./.doc/rtc1.png)  
 
-![Screen Sharing](./.doc/rtc3.png)
+- Screen Sharing  
 
-- Chat Social
+![Screen Sharing](./.doc/rtc3.png)  
 
-![Dark Theme](./.doc/chat2.png)
+- Social Chat  
 
-- AI Shopping Chat (Source: [JiwuMall](https://github.com/KiWi233333/jiwu-mall-sites))
+![Dark](./.doc/chat2.png)  
 
-![Dark Theme](./.doc/chat3.png)
+- AI Shopping (Powered by [Jiwu Circle](https://github.com/KiWi233333/jiwu-mall-sites))  
 
-![Dark Theme](./.doc/chat3.2.png)
+![Dark](./.doc/chat3.png)  
 
-- Account & Security
+![Dark](./.doc/chat3.2.png)  
 
-![Account & Security](./.doc/chat4.png)
+- Account & Security  
 
-![Account & Security](./.doc/chat5.png)
+![Account](./.doc/chat4.png)  
 
-- Mobile Adaptation
+![Security](./.doc/chat5.png)  
+
+- Settings  
+
+![Settings](./.doc/chat6-light.png)  
+
+- Mobile Adaptation  
 
 <div>
- <img src="./.doc/chat12.png" width = "190" style="display:inline-block;" alt="Mobile Adaptation" align=center />
- <img src="./.doc/chat14.png" width = "190" style="display:inline-block;" alt="Mobile Adaptation" align=center />
- <img src="./.doc/chat13.png" width = "190" style="display:inline-block;" alt="Mobile Adaptation" align=center />
- <img src="./.doc/chat7.png" width = "190" style="display:inline-block;" alt="Mobile Adaptation" align=center />
- <img src="./.doc/rtc2.png" width = "190" style="display:inline-block;" alt="Mobile Adaptation" align=center />
- <img src="./.doc/rtc_remove_desktop.png" width = "190" style="display:inline-block;" alt="Mobile Adaptation" align=center />
- <img src="./.doc/chat8.png" width = "190" style="display:inline-block;" alt="Mobile Adaptation" align=center />
- <img src="./.doc/chat10.png" width = "190" style="display:inline-block;" alt="Mobile Adaptation" align=center />
- <img src="./.doc/chat15.png" width = "190" style="display:inline-block;" alt="Mobile Adaptation" align=center />
- <img src="./.doc/chat11.png" width = "190" style="display:inline-block;" alt="Mobile Adaptation" align=center />
- <img src="./.doc/chat17.png" width = "190" style="display:inline-block;" alt="Mobile Adaptation" align=center />
- <img src="./.doc/chat16.png" width = "190" style="display:inline-block;" alt="Mobile Adaptation" align=center />
- <img src="./.doc/chat9.png" width = "190" style="display:inline-block;" alt="Mobile Adaptation" align=center />
-</div>
+ <img src="./.doc/chat12.png" width = "190" style="display:inline-block;" alt="Mobile" align=center />
+ <img src="./.doc/chat14.png" width = "190" style="display:inline-block;" alt="Mobile" align=center />
+ <img src="./.doc/chat13.png" width = "190" style="display:inline-block;" alt="Mobile" align=center />
+ <img src="./.doc/chat7.png" width = "190" style="display:inline-block;" alt="Mobile" align=center />
+ <img src="./.doc/rtc2.png" width = "190" style="display:inline-block;" alt="Mobile" align=center />
+ <img src="./.doc/rtc_remove_desktop.png" width = "190" style="display:inline-block;" alt="Mobile" align=center />
+ <img src="./.doc/chat8.png" width = "190" style="display:inline-block;" alt="Mobile" align=center />
+ <img src="./.doc/chat10.png" width = "190" style="display:inline-block;" alt="Mobile" align=center />
+ <img src="./.doc/chat15.png" width = "190" style="display:inline-block;" alt="Mobile" align=center />
+ <img src="./.doc/chat11.png" width = "190" style="display:inline-block;" alt="Mobile" align=center />
+ <img src="./.doc/chat17.png" width = "190" style="display:inline-block;" alt="Mobile" align=center />
+ <img src="./.doc/chat16.png" width = "190" style="display:inline-block;" alt="Mobile" align=center />
+ <img src="./.doc/chat9.png" width = "190" style="display:inline-block;" alt="Mobile" align=center />
+</div>  
 
-## ⏳ Getting Started
+## ⏳ Getting Started  
 
-### 📦 Install Dependencies
+### 📦 Install Dependencies  
 
 ```sh
-# node version >= 18
+Node.js >= 18 required
 npm install -g pnpm
 
 pnpm install
-```
+```  
 
-### ✨ Development
+### ✨ Development  
 
-- 📌 If you do `not` have a backend service, modify the `.env.development` environment variables or use the `.env.production` configuration file.
+- 📌 If you **don't** have a backend server, modify `.env.development` or use `.env.production`.  
 
 ```sh
-# Terminal 1: Start Nuxt (Production Environment)
+Terminal 1: Start Nuxt (Production)
 pnpm run prod:nuxt
-# Terminal 2: Start Tauri
+Terminal 2: Start Tauri
 pnpm run dev:tauri
-```
+```  
 
-- If you `have` a backend service, you can modify the `.env.development` environment variables for development.
+- If you **have** a backend, customize `.env.development` for development:  
 
 ```sh
-# Recommended to run separately
-# Terminal 1: Start Nuxt
+Recommended to run separately
+Terminal 1: Start Nuxt
 pnpm run dev:nuxt
-# Terminal 2: Start Tauri
+Terminal 2: Start Tauri
 pnpm run dev:tauri
-```
+```  
 
-### 📦 Build
+### 📦 Build  
 
 ```sh
 pnpm run build:tauri
-```
+```  
 
-### ❌ pnpm install error
+### ❌ pnpm Install Errors  
 
-Check the registry
+Check registry:  
 
 ```sh
 pnpm get registry
-```
+```  
 
-Temporary change
+Temporary fix:  
 
 ```sh
 pnpm --registry https://registry.npm.taobao.org install any-touch
-```
+```  
 
-Persistent change
+Persistent change:  
 
 ```sh
 pnpm config set registry https://registry.npm.taobao.org
-```
+```  
 
-Revert
+Revert:  
 
 ```sh
 pnpm config set registry https://registry.npmjs.org
-```
+```  
 
-## 🔧 Tech Stack | Tech Stack
+## 🔧 Tech Stack  
 
-| Category         | Technology/Component          | Version       |
-| ------------- | ------------------ | ------------ |
-| Framework         | Nuxt             | ^3.14.159+       |
-|                 | Tauri               | ^2.1.0        |
-| UI Library     | Element Plus       | ^2.8.4        |
-| State Management     | Pinia              | 2.1.7        |
-| Utility Library       | Vueuse             | 10.11.0      |
-| Build & Development Tools | Nuxi               | lts        |
-|              | Vite               | lts         |
-| Code Quality     | ESLint             | 8.56.0       |
-|              | Prettier           | 3.3.2        |
-| Type Checking     | TypeScript         | 5.3.2        |
-| Styling     | Sass               | 1.77.6       |
+| Category       | Technology/Component       | Version       |
+|----------------|----------------------------|---------------|
+| Framework      | Nuxt                       | ^3.14.159+    |
+|                | Tauri                      | ^2.1.0        |
+| UI Library     | Element Plus               | ^2.8.4        |
+| State Management| Pinia                      | 2.1.7         |
+| Utility        | Vueuse                     | 10.11.0       |
+| Build Tools    | Nuxi                       | lts           |
+|                | Vite                       | lts           |
+| Code Quality   | ESLint                     | 8.56.0        |
+|                | Prettier                   | 3.3.2         |
+| Type Checking  | TypeScript                 | 5.3.2         |
+| Styling        | Sass                       | 1.77.6        |  
 
-## 🦾  Trends
+## 🦾 Trends  
 
 ![JiwuChat Star History Chart](https://api.star-history.com/svg?repos=KiWi233333/jiwu-mall-chat-tauri&type=Date)
 
-## 💬 Contact
+## 💬 Contact  
 
-- Email: [kiwi2333@qq.com](mailto:kiwi2333@qq.com)
+- Email: [kiwi2333@qq.com](mailto:kiwi2333@qq.com)  
+- QQ: [1329634286](https://wpa.qq.com/msgrd?v=3&uin=1329634286&site=qqq&menu=yes)  
+- QQ Group: [939204073](https://qm.qq.com/q/iSaETNVdKw)  
