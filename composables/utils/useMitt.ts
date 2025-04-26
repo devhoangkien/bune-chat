@@ -1,6 +1,7 @@
 import mitt from "mitt";
 
 export enum MittEventType {
+  CHAT_WS_RELOAD = "chat-ws-reload", // ws重新连接事件
   // 全局快捷键
   SHORTCUT_KEY = "js-shortcut-key",
 
@@ -89,6 +90,8 @@ export interface MessageQueuePayload {
 
 // eslint-disable-next-line ts/consistent-type-definitions
 type EventPayloadMap = {
+  // ws重新连接事件
+  [MittEventType.CHAT_WS_RELOAD]: void;
   // 全局快捷键
   [MittEventType.SHORTCUT_KEY]: { key: string, options: { ctrlKey?: boolean, shiftKey?: boolean, altKey?: boolean, metaKey?: boolean } };
   // ws接收消息事件

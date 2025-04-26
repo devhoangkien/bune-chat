@@ -1,4 +1,4 @@
-import { MittEventType } from "../utils/useMitt";
+import { MittEventType } from "../../utils/useMitt";
 
 // 消息状态枚举
 export enum MessageSendStatus {

@@ -3,8 +3,8 @@ import { listen } from "@tauri-apps/api/event";
 import { appDataDir } from "@tauri-apps/api/path";
 import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
 import { isPermissionGranted, requestPermission } from "@tauri-apps/plugin-notification";
+import { openUrl } from "@tauri-apps/plugin-opener";
 import { type as osType, platform } from "@tauri-apps/plugin-os";
-import { open } from "@tauri-apps/plugin-shell";
 import { restoreStateCurrent, StateFlags } from "@tauri-apps/plugin-window-state";
 import { useFlashTray } from "~/composables/tauri/window";
 
@@ -56,7 +56,7 @@ export async function userTauriInit() {
   const unListenOpenUrl = await listen<PayloadType>("open_url", (e) => {
     const url = e.payload.message; // 路径
     if (url)
-      open(url);
+      openUrl(url);
   });
   // 监听路由事件
   const unListenRouter = await listen<PayloadType>("router", (e) => {

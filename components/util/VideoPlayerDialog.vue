@@ -167,6 +167,9 @@ function destroy() {
   }
   setTimeout(() => {
     console.log("销毁");
+    // 暂停视频
+    videoPlayerRef.value?.pause?.();
+    // 清空视频信息
     videoInfo.value = {
       ...videoInfo.value,
       url: "", // 清空部分

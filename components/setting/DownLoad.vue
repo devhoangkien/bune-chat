@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { open as openFile } from "@tauri-apps/plugin-shell";
+import { openPath } from "@tauri-apps/plugin-opener";
 
 const setting = useSettingStore();
 
@@ -21,7 +21,7 @@ async function openFileFolder() {
     });
     return;
   }
-  openFile(setting.appDataDownloadDirUrl);
+  await openPath(setting.appDataDownloadDirUrl);
 }
 </script>
 
