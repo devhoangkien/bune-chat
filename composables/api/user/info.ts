@@ -1,6 +1,7 @@
 import type { isTrue, Result } from "@/types/result";
 import type { DeviceType } from "./auth";
 import type { Gender, UserStatus } from "~/types";
+import { queryCheckUserExists } from "~/composables/graphql/auth";
 
 /**
  * 获取用户个人信息
@@ -232,13 +233,19 @@ export interface UpdateEmail {
   code: string
 }
 /**
- * 验证-用户名是否存在
+ * Verify - Username exists
  * @param username
- * @returns data
+ * @returns boolean
  */
-export function checkUsernameExists(username: string) {
-  return useHttp.get<Result<string>>(
-    "/user/exist",
-    { username },
-  );
-};
+export async function checkUsernameExists(
+  username: string,
+): Promise<boolean> {
+  try {
+    const { data } = await useAsyncQuery<{ checkUserExists: boolean; }>(queryCheckUserExists, { data: { username } });
+    const exists = data.value?.checkUserExists ?? false;
+    return exists;
+  }
+  catch (error) {
+    return false;
+  }
+}

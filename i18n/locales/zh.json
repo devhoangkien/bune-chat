@@ -5,5 +5,9 @@
   "login": "登录",
   "logout": "登出",
   "phone": "电话",
-  "register": "注册"
+  "enterCode": "输入代码",
+  "register": {
+    "title":"Register"
+  }
+  
 }

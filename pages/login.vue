@@ -91,7 +91,7 @@ if (setting.isDesktop) {
               {{ appName }}
             </h3>
           </div>
-          <!-- Lgin form -->
+          <!-- Login form -->
           <FormLoginForm v-if="user.showLoginAndRegister === 'login'" key="login-form" style="--anima: blur-in" class="login-form mt-a" />
           <!-- Register form -->
           <FormRegisterForm

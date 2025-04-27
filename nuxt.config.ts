@@ -43,6 +43,8 @@ export default defineNuxtConfig({
     clients: {
       default: {
         httpEndpoint: GQL_HOST,
+        authType: "Bearer",
+        authHeader: "Authorization",
       },
     },
   },

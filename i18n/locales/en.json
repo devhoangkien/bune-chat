@@ -5,5 +5,8 @@
   "login": "Login",
   "logout": "Logout",
   "phone": "Phone",
-  "register": "Register"
+  "enterCode": "Enter Code",
+  "register": {
+    "title":"Register"
+  }
 }

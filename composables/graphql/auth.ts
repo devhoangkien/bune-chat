@@ -7,3 +7,9 @@ export const mutationlLogin = gql`
       }
     }
   `;
+
+export const queryCheckUserExists = gql`
+  query CheckUserExists($data: CheckUserExistDto!) {
+    checkUserExists(data: $data)
+  }
+`;

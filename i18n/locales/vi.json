@@ -5,5 +5,9 @@
   "login": "Đăng nhập",
   "logout": "Đăng xuất",
   "phone": "Điện thoại",
-  "register": "Đăng ký"
+  "register": {
+    "title":"Register"
+  },
+  "enterCode": "Nhập mã"
+
 }
